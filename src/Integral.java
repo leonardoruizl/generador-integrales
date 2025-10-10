@@ -1,7 +1,13 @@
+import org.scilab.forge.jlatexmath.TeXConstants;
+import org.scilab.forge.jlatexmath.TeXFormula;
+import org.scilab.forge.jlatexmath.TeXIcon;
+
 import javax.swing.*;
 import java.awt.*;
-import org.scilab.forge.jlatexmath.*;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Scanner;
+import java.util.Set;
 
 public class Integral {
     private int k, c, d, n, m, a, b;
