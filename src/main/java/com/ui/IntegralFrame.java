@@ -71,7 +71,7 @@ public class IntegralFrame extends JFrame {
         if (seleccion == integral.getOpcionCorrecta()) {
             panelControl.mostrarResultado("<html><span style='color:green; font-weight:bold;'>¡Correcto!</span></html>");
         } else {
-            String msg = String.format("<html><span style'color:red; font-weight:bold;'>Incorrecto.</span> " +
+            String msg = String.format("<html><span style='color:red; font-weight:bold;'>Incorrecto.</span> " +
                     "La respuesta era <span style='color:green;'>%.5f</span></html>", integral.getResultado());
             panelControl.mostrarResultado(msg);
         }
