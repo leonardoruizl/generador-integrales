@@ -1,3 +1,7 @@
+package com.main;
+
+import com.ui.IntegralFrame;
+
 import javax.swing.*;
 
 public class Main {

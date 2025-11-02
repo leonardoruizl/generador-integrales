@@ -1,3 +1,5 @@
+package com.model;
+
 import java.util.Random;
 
 public class Integral {
@@ -34,9 +36,6 @@ public class Integral {
         // Manejo especial si el resultado es cercano a cero
         if (Math.abs(resultado) < 0.00001) {
             resultado = 0;
-            for (int i = 0; i < opciones.length; i++) {
-                opciones[i] = (Math.random() - 0.5) * 0.2; // ±0.1
-            }
         }
     }
 
@@ -47,7 +46,15 @@ public class Integral {
         opcionCorrecta = rand.nextInt(5);
 
         // Evitar cero absoluto
-        if (Math.abs(resultado) < 0.00001) resultado = 0;
+        if (Math.abs(resultado) < 0.00001) {
+            resultado = 0;
+
+            for (int i = 0; i < opciones.length; i++) {
+                opciones[i] = (Math.random() - 0.5) * 0.2; // ±0.1
+            }
+            opciones[opcionCorrecta] = resultado;
+            return;
+        }
 
         // Índice de las opciones incorrectas
         int[] indices = {0, 1, 2, 3, 4};

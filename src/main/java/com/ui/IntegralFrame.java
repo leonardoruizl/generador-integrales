@@ -1,9 +1,12 @@
+package com.ui;
+
+import com.model.*;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class IntegralFrame extends JFrame {
     private Integral integral; // El modelo de la integral
-    private final PanelAppBar panelAppBar;
     private final PanelIntegral panelIntegral;
     private final PanelOpciones panelOpciones;
     private final PanelControl panelControl;
@@ -16,7 +19,7 @@ public class IntegralFrame extends JFrame {
         setLayout(new BorderLayout(10, 10));
 
         // Crear los paneles junto con los listeners
-        panelAppBar = new PanelAppBar(e -> generarNuevaIntegral());
+        PanelAppBar panelAppBar = new PanelAppBar(e -> generarNuevaIntegral());
         panelIntegral = new PanelIntegral();
         panelOpciones = new PanelOpciones();
         panelControl = new PanelControl(e -> verificarRespuesta());

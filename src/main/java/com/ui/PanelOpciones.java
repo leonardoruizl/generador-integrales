@@ -1,8 +1,10 @@
+package com.ui;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class PanelOpciones extends JPanel {
-    private JRadioButton[] botones;
+    private final JRadioButton[] botones;
     private ButtonGroup grupoOpciones;
 
     public PanelOpciones() {

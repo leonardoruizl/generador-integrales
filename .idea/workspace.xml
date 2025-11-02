@@ -4,11 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77e99c16-d3e3-4455-9272-b664b815b2fb" name="Changes" comment="Se modifica estructura del proyecto">
-      <change afterPath="$PROJECT_DIR$/src/IconoPlus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="77e99c16-d3e3-4455-9272-b664b815b2fb" name="Changes" comment="Mejor escalado del icono para generar nueva integral">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/main/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/icons/add_circle.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/icons/add_circle.svg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/PanelAppBar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/PanelAppBar.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/IconoPlus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/util/IconoPlus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Integral.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/model/Integral.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/IntegralFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ui/IntegralFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/PanelAppBar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ui/PanelAppBar.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/PanelControl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ui/PanelControl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/PanelIntegral.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ui/PanelIntegral.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/PanelOpciones.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ui/PanelOpciones.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/TestIntegral_structure.puml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/icons/add_circle.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/icons/add_circle.svg" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -137,7 +148,15 @@
       <option name="project" value="LOCAL" />
       <updated>1762049836534</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Mejor escalado del icono para generar nueva integral">
+      <option name="closed" value="true" />
+      <created>1762050360100</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1762050360100</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -157,6 +176,7 @@
     <MESSAGE value="Se agrega interfaz grafica con swing" />
     <MESSAGE value="Se mejora la estructura de clases" />
     <MESSAGE value="Se modifica estructura del proyecto" />
-    <option name="LAST_COMMIT_MESSAGE" value="Se modifica estructura del proyecto" />
+    <MESSAGE value="Mejor escalado del icono para generar nueva integral" />
+    <option name="LAST_COMMIT_MESSAGE" value="Mejor escalado del icono para generar nueva integral" />
   </component>
 </project>
