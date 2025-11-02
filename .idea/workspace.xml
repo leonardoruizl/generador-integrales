@@ -4,11 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77e99c16-d3e3-4455-9272-b664b815b2fb" name="Changes" comment="Primer commit">
-      <change afterPath="$PROJECT_DIR$/.idea/easycode.ignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/easycode/codebase-v2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/TestIntegral_structure.puml" afterDir="false" />
+    <list default="true" id="77e99c16-d3e3-4455-9272-b664b815b2fb" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/lib/jlatexmath-1.0.7.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/jlatexmath-font-cyrillic-1.0.7.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/jlatexmath-font-greek-1.0.7.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/TestIntegralGUI.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/icons/add_circle.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/icons/add_circle.svg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Integral.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Integral.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/TestIntegral.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,7 +44,7 @@
   }
 }</component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="DEPENDENCY_CHECKER_PROBLEMS_TAB" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
@@ -60,6 +66,7 @@
     "ASKED_ADD_EXTERNAL_FILES": "true",
     "Application.Integrales.executor": "Run",
     "Application.TestIntegral.executor": "Run",
+    "Application.TestIntegralGUI.executor": "Run",
     "Downloaded.Files.Path.Enabled": "true",
     "Repository.Attach.Annotations": "false",
     "Repository.Attach.JavaDocs": "false",
@@ -71,16 +78,21 @@
     "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/leona/Documents/ITSJ/2do semestre/Integrales",
-    "project.structure.last.edited": "Modules",
+    "last_opened_file_path": "C:/Users/leona/ITSJ/2do semestre/Integrales/src/icons",
+    "project.structure.last.edited": "Libraries",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
     "settings.editor.selected.configurable": "preferences.pluginManager"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\leona\ITSJ\2do semestre\Integrales\src\icons" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="Integrales" type="Application" factoryName="Application">
-      <option name="MAIN_CLASS_NAME" value="TestIntegral" />
+      <option name="MAIN_CLASS_NAME" value="Main" />
       <module name="Integrales" />
       <method v="2">
         <option name="Make" enabled="true" />
