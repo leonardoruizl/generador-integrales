@@ -4,14 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77e99c16-d3e3-4455-9272-b664b815b2fb" name="Changes" comment="Se agrega interfaz grafica con swing">
-      <change afterPath="$PROJECT_DIR$/src/PanelAppBar.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/PanelControl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/PanelIntegral.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/PanelOpciones.java" afterDir="false" />
+    <list default="true" id="77e99c16-d3e3-4455-9272-b664b815b2fb" name="Changes" comment="Se mejora la estructura de clases">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/TestIntegralGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/IntegralFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Integrales.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Integrales.iml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,7 +75,7 @@
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/leona/ITSJ/2do semestre/Integrales/src/icons",
-    "project.structure.last.edited": "Libraries",
+    "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
     "settings.editor.selected.configurable": "preferences.pluginManager"
@@ -85,6 +84,9 @@
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\leona\ITSJ\2do semestre\Integrales\src\icons" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\leona\ITSJ\2do semestre\Integrales" />
     </key>
   </component>
   <component name="RunManager">
@@ -121,7 +123,15 @@
       <option name="project" value="LOCAL" />
       <updated>1762042163491</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Se mejora la estructura de clases">
+      <option name="closed" value="true" />
+      <created>1762044927486</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1762044927486</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -139,6 +149,7 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="Primer commit" />
     <MESSAGE value="Se agrega interfaz grafica con swing" />
-    <option name="LAST_COMMIT_MESSAGE" value="Se agrega interfaz grafica con swing" />
+    <MESSAGE value="Se mejora la estructura de clases" />
+    <option name="LAST_COMMIT_MESSAGE" value="Se mejora la estructura de clases" />
   </component>
 </project>

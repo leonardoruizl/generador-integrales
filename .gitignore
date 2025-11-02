@@ -1,4 +1,13 @@
 ### IntelliJ IDEA ###
+.idea/
+/target/
+
+# Excepciones: No ignorar los archivos de configuración esenciales
+!/.idea/misc.xml         # Versión del SDK/JDK (MUY IMPORTANTE)
+!/.idea/modules.xml      # Estructura del módulo
+!/.idea/vcs.xml          # Configuración de las raíces de control de versiones
+!/.idea/*.iml            # Archivos de módulo generados
+
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
