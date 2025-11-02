@@ -15,18 +15,17 @@ public class PanelAppBar extends JPanel {
         JButton botonNuevaIntegral = new JButton();
         botonNuevaIntegral.setToolTipText("Generar nueva integral");
 
-        try {
-            ImageIcon icono = new ImageIcon("src/icons/add_circle.png");
-            botonNuevaIntegral.setIcon(icono);
-        } catch (Exception e) {
-            botonNuevaIntegral.setText("Nueva Integral");
-        }
+        IconoPlus icono = new IconoPlus(18, Color.BLACK, 2.5f);
+        botonNuevaIntegral.setIcon(icono);
 
         botonNuevaIntegral.setBackground(Color.WHITE);
-        botonNuevaIntegral.setForeground(Color.BLACK);
+        botonNuevaIntegral.setOpaque(true);
         botonNuevaIntegral.setFocusPainted(false);
-        botonNuevaIntegral.setBorder(BorderFactory.createEmptyBorder(5, 12, 5, 12));
+        botonNuevaIntegral.setBorder(BorderFactory.createEmptyBorder());
 
+        int iconSize = icono.getIconWidth();
+
+        botonNuevaIntegral.setPreferredSize(new Dimension(iconSize + 12, iconSize + 12)); // Ícono + padding
         botonNuevaIntegral.addActionListener(nuevaIntegralListener);
 
         add(titulo, BorderLayout.WEST);
