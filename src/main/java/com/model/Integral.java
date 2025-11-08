@@ -3,40 +3,59 @@ package com.model;
 import java.util.Random;
 
 public class Integral {
-    private int k, c, d, n, m, a, b;
-    private double resultado;
-    private int opcionCorrecta;
-    private double[] opciones;
+    private IntegralEstrategia estrategia;
+    private int limiteInferior, limiteSuperior;
+    private boolean mostrarPasos;
 
-    public Integral() {
-        generarIntegral();
-        calcularResultado();
+    private double resultado;
+    private double[] opciones;
+    private int opcionCorrecta;
+
+    private String latex;
+    private String pasos;
+
+    public Integral(String tipo, int limiteInferior, int limiteSuperior, boolean pasos) {
+        this.limiteInferior = limiteInferior;
+        this.limiteSuperior = limiteSuperior;
+        this.mostrarPasos = pasos;
+
+        seleccionarEstrategia(tipo);
+        estrategia.generarParametros();
+        resolver();
         generarOpciones();
     }
 
-    // Genera los valores aleatorios de la integral
-    private void generarIntegral() {
-        Random rand = new Random();
-        k = rand.nextInt(5) + 1;          // Coeficiente del término superior 1 a 5
-        c = rand.nextInt(4) + 1;          // Coeficiente del primer término del binomio 1 a 4
-        d = rand.nextInt(5) + 1;          // Constante del binomio 1 a 5
-        n = rand.nextInt(2) + 2;          // Potencia del binomio 2 o 3
-        m = rand.nextInt(3) + 1;          // Potencia superior 1 a 3
-        a = rand.nextInt(6) - 4;          // Límite inferior -4 a 1
-        b = rand.nextInt(4) + 1;          // Límite superior 1 a 4
+    private void seleccionarEstrategia(String tipo) {
+        Random r = new Random();
+
+        switch (tipo) {
+            case "raiz":
+                estrategia = new IntegralRaiz();
+                break;
+            case "fraccion":
+                estrategia = new IntegralFraccion();
+                break;
+            case "trig":
+                estrategia = new IntegralTrig();
+                break;
+            case "aleatoria":
+                // Elegir un tipo al azar
+                String[] tipos = {"raiz", "fraccion", "trig"};
+                estrategia = switch (tipos[r.nextInt(tipos.length)]) {
+                    case "raiz" -> new IntegralRaiz();
+                    case "fraccion" -> new IntegralFraccion();
+                    default -> new IntegralTrig();
+                };
+                break;
+            default:
+                throw new IllegalArgumentException("Tipo desconocido");
+        }
     }
 
-    // Calcula el resultado exacto de la integral definida
-    private void calcularResultado() {
-        double coeficiente = (double) k / (c * (m + 1) * (1 - n));
-        double valB = Math.pow(c * Math.pow(b, m + 1) + d, 1 - n);
-        double valA = Math.pow(c * Math.pow(a, m + 1) + d, 1 - n);
-        resultado = coeficiente * (valB - valA);
-
-        // Manejo especial si el resultado es cercano a cero
-        if (Math.abs(resultado) < 0.00001) {
-            resultado = 0;
-        }
+    private void resolver() {
+        resultado = estrategia.calcularResultado(limiteInferior, limiteSuperior);
+        latex = estrategia.getLatex();
+        pasos = mostrarPasos ? estrategia.getPasos() : "";
     }
 
     // Genera 5 opciones distintas (una correcta)
@@ -114,31 +133,11 @@ public class Integral {
         return resultado;
     }
 
-    public int getA() {
-        return a;
+    public String getLatex() {
+        return latex;
     }
 
-    public int getB() {
-        return b;
-    }
-
-    public int getK() {
-        return k;
-    }
-
-    public int getC() {
-        return c;
-    }
-
-    public int getD() {
-        return d;
-    }
-
-    public int getM() {
-        return m;
-    }
-
-    public int getN() {
-        return n;
+    public String getPasos() {
+        return pasos;
     }
 }
