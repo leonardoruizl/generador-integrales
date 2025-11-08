@@ -4,14 +4,12 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ConfigIntegralDialog extends JDialog {
-    private JRadioButton rbRaiz;
-    private JRadioButton rbFraccion;
-    private JRadioButton rbTrig;
-    private JCheckBox cbMostrarPasos;
+    private JRadioButton rbRaiz, rbFraccion, rbTrig, rbAleatoria;
+    private JCheckBox cbMostrarPasos, cbAleatorio;
     private JTextField txtLimiteInferior, txtLimiteSuperior;
     private boolean confirmado = false;
 
-    public ConfigIntegralDialog(Frame owner, double limInf, double limSup, boolean mostrar, String tipo) {
+    public ConfigIntegralDialog(Frame owner, double limInf, double limSup, boolean mostrar, boolean aleatorio, String tipo) {
         super(owner, "Configuración de Integral", true);
         initUi();
 
@@ -20,18 +18,15 @@ public class ConfigIntegralDialog extends JDialog {
         cbMostrarPasos.setSelected(mostrar);
 
         switch (tipo) {
-            case "raiz":
-                rbRaiz.setSelected(true);
-                break;
-            case "fraccion":
-                rbFraccion.setSelected(true);
-                break;
-            case "trig":
-                rbTrig.setSelected(true);
-                break;
-            default: /* aleatoria */
-                ;
+            case "raiz" -> rbRaiz.setSelected(true);
+            case "fraccion" -> rbFraccion.setSelected(true);
+            case "trig" -> rbTrig.setSelected(true);
+            default -> rbAleatoria.setSelected(true);
         }
+
+        cbAleatorio.setSelected(aleatorio);
+        txtLimiteInferior.setEnabled(!aleatorio);
+        txtLimiteSuperior.setEnabled(!aleatorio);
 
         pack();
         setLocationRelativeTo(owner);
@@ -47,7 +42,7 @@ public class ConfigIntegralDialog extends JDialog {
         rbRaiz = new JRadioButton("Raíz");
         rbFraccion = new JRadioButton("Fracción");
         rbTrig = new JRadioButton("Trigonométrica");
-        JRadioButton rbAleatoria = new JRadioButton("Aleatoria", true);
+        rbAleatoria = new JRadioButton("Aleatoria");
 
         ButtonGroup grupo = new ButtonGroup();
         grupo.add(rbRaiz);
@@ -55,7 +50,7 @@ public class ConfigIntegralDialog extends JDialog {
         grupo.add(rbTrig);
         grupo.add(rbAleatoria);
 
-        rbAleatoria.setSelected(true); // Selección por defecto
+        rbAleatoria.setSelected(true);
 
         tipoPanel.add(rbRaiz);
         tipoPanel.add(rbFraccion);
@@ -80,6 +75,17 @@ public class ConfigIntegralDialog extends JDialog {
         limitesPanel.add(new JLabel("Límite superior:"));
         txtLimiteSuperior = new JTextField("1", 5);
         limitesPanel.add(txtLimiteSuperior);
+
+        cbAleatorio = new JCheckBox("Generar límites aleatorios");
+        cbAleatorio.addActionListener(e -> {
+            boolean aleatorio = cbAleatorio.isSelected();
+            txtLimiteInferior.setEnabled(!aleatorio);
+            txtLimiteSuperior.setEnabled(!aleatorio);
+        });
+        // sincroniza estado inicial
+        txtLimiteInferior.setEnabled(!cbAleatorio.isSelected());
+        txtLimiteSuperior.setEnabled(!cbAleatorio.isSelected());
+        limitesPanel.add(cbAleatorio);
 
         // Panel de botones
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -144,5 +150,9 @@ public class ConfigIntegralDialog extends JDialog {
         } catch (NumberFormatException e) {
             return null;
         }
+    }
+
+    public boolean getLimitesAleatorios() {
+        return cbAleatorio.isSelected();
     }
 }

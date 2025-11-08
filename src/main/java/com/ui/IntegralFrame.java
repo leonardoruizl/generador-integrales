@@ -4,12 +4,14 @@ import com.model.Integral;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Random;
 
 public class IntegralFrame extends JFrame {
     private String tipo = "aleatoria";
     private double limiteInferior = 0;
     private double limiteSuperior = 1;
     private boolean mostrarPasos = false;
+    private boolean limitesAleatorios = true;
 
     private Integral integral; // El modelo de la integral
     private final PanelIntegral panelIntegral;
@@ -59,6 +61,21 @@ public class IntegralFrame extends JFrame {
     }
 
     private void generarNuevaIntegral() {
+        if (limitesAleatorios) {
+            Random r = new Random();
+            int a = r.nextInt(11) - 5;   // [-5, 5]
+            int b = r.nextInt(11) - 5;
+
+            if (a > b) {
+                int tmp = a;
+                a = b;
+                b = tmp;
+            }
+
+            limiteInferior = a;
+            limiteSuperior = b;
+        }
+
         integral = new Integral(tipo, limiteInferior, limiteSuperior, mostrarPasos);
 
         panelIntegral.mostrarIntegral(integral);
@@ -85,38 +102,39 @@ public class IntegralFrame extends JFrame {
     }
 
     private void mostrarConfiguracionIntegral() {
-        ConfigIntegralDialog configDialog = new ConfigIntegralDialog(this, limiteInferior, limiteSuperior, mostrarPasos, tipo);
+        ConfigIntegralDialog configDialog = new ConfigIntegralDialog(this, limiteInferior, limiteSuperior, mostrarPasos, limitesAleatorios, tipo);
         configDialog.setVisible(true);
 
         if (!configDialog.getConfirmado()) {
             return;
         }
 
-        // Obtener los valores configurados
         tipo = configDialog.getTipoIntegral();
         mostrarPasos = configDialog.getMostrarPasos();
+        limitesAleatorios = configDialog.getLimitesAleatorios();
 
-        Double tmpInferior = configDialog.getLimiteInferior();
-        Double tmpSuperior = configDialog.getLimiteSuperior();
+        if (!limitesAleatorios) {
+            Double tmpInferior = configDialog.getLimiteInferior();
+            Double tmpSuperior = configDialog.getLimiteSuperior();
 
-        if (tmpInferior == null || tmpSuperior == null) {
-            JOptionPane.showMessageDialog(this,
-                    "Los límites deben ser números válidos.",
-                    "Error", JOptionPane.ERROR_MESSAGE);
-            return;
+            if (tmpInferior == null || tmpSuperior == null) {
+                JOptionPane.showMessageDialog(this,
+                        "Los límites deben ser números válidos.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (tmpInferior >= tmpSuperior) {
+                JOptionPane.showMessageDialog(this,
+                        "El límite inferior debe ser menor.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            limiteInferior = tmpInferior;
+            limiteSuperior = tmpSuperior;
         }
 
-        if (tmpInferior >= tmpSuperior) {
-            JOptionPane.showMessageDialog(this,
-                    "El límite inferior debe ser menor.",
-                    "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        limiteInferior = tmpInferior;
-        limiteSuperior = tmpSuperior;
-
-        // Generar una nueva integral con la configuración seleccionada
         generarNuevaIntegral();
     }
 

@@ -45,7 +45,12 @@ public class Integral {
     }
 
     private void resolver() {
-        resultado = estrategia.calcularResultado(limiteInferior, limiteSuperior);
+        try {
+            resultado = estrategia.calcularResultado(limiteInferior, limiteSuperior);
+        } catch (ArithmeticException e) {
+            estrategia.generarParametros();
+            resolver();
+        }
 
         latex = String.format(
                 "\\int_{%s}^{%s} %s \\, dx",
