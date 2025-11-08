@@ -11,9 +11,28 @@ public class ConfigIntegralDialog extends JDialog {
     private JTextField txtLimiteInferior, txtLimiteSuperior;
     private boolean confirmado = false;
 
-    public ConfigIntegralDialog(Frame owner) {
+    public ConfigIntegralDialog(Frame owner, double limInf, double limSup, boolean mostrar, String tipo) {
         super(owner, "Configuración de Integral", true);
         initUi();
+
+        txtLimiteInferior.setText(formatDouble(limInf));
+        txtLimiteSuperior.setText(formatDouble(limSup));
+        cbMostrarPasos.setSelected(mostrar);
+
+        switch (tipo) {
+            case "raiz":
+                rbRaiz.setSelected(true);
+                break;
+            case "fraccion":
+                rbFraccion.setSelected(true);
+                break;
+            case "trig":
+                rbTrig.setSelected(true);
+                break;
+            default: /* aleatoria */
+                ;
+        }
+
         pack();
         setLocationRelativeTo(owner);
     }
@@ -55,11 +74,11 @@ public class ConfigIntegralDialog extends JDialog {
         limitesPanel.setBorder(BorderFactory.createTitledBorder("Límites"));
 
         limitesPanel.add(new JLabel("Límite inferior:"));
-        txtLimiteInferior = new JTextField("-3", 5);
+        txtLimiteInferior = new JTextField("0", 5);
         limitesPanel.add(txtLimiteInferior);
 
         limitesPanel.add(new JLabel("Límite superior:"));
-        txtLimiteSuperior = new JTextField("3", 5);
+        txtLimiteSuperior = new JTextField("1", 5);
         limitesPanel.add(txtLimiteSuperior);
 
         // Panel de botones
@@ -77,7 +96,7 @@ public class ConfigIntegralDialog extends JDialog {
         panelBotones.add(btnAceptar);
         panelBotones.add(btnCancelar);
 
-        // Organizar todo en el diálogo
+        // Organizar el diálogo
         JPanel centroPanel = new JPanel(new GridLayout(3, 1));
         centroPanel.add(tipoPanel);
         centroPanel.add(pasosPanel);
@@ -85,6 +104,15 @@ public class ConfigIntegralDialog extends JDialog {
 
         add(centroPanel, BorderLayout.CENTER);
         add(panelBotones, BorderLayout.SOUTH);
+    }
+
+    // Formatear double para mostrar sin decimales si es entero
+    private String formatDouble(double x) {
+        if (x == (long) x) {
+            return String.format("%d", (long) x);  // sin decimal
+        } else {
+            return String.valueOf(x);             // con decimal
+        }
     }
 
     public boolean getConfirmado() {

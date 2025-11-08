@@ -85,7 +85,7 @@ public class IntegralFrame extends JFrame {
     }
 
     private void mostrarConfiguracionIntegral() {
-        ConfigIntegralDialog configDialog = new ConfigIntegralDialog(this);
+        ConfigIntegralDialog configDialog = new ConfigIntegralDialog(this, limiteInferior, limiteSuperior, mostrarPasos, tipo);
         configDialog.setVisible(true);
 
         if (!configDialog.getConfirmado()) {
