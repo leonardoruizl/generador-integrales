@@ -13,12 +13,12 @@ public class IntegralRaiz implements IntegralEstrategia {
     }
 
     @Override
-    public double calcularResultado(int limiteInferior, int limiteSuperior) {
+    public double calcularResultado(double limiteInferior, double limiteSuperior) {
         // F(x)
         return F(limiteSuperior) - F(limiteInferior);
     }
 
-    private double F(int x) {
+    private double F(double x) {
         return (2.0 / 3.0) * Math.pow(a * x + b, 1.5) / a;
     }
 

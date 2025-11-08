@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class Integral {
     private IntegralEstrategia estrategia;
-    private int limiteInferior, limiteSuperior;
+    private double limiteInferior, limiteSuperior;
     private boolean mostrarPasos;
 
     private double resultado;
@@ -14,7 +14,7 @@ public class Integral {
     private String latex;
     private String pasos;
 
-    public Integral(String tipo, int limiteInferior, int limiteSuperior, boolean pasos) {
+    public Integral(String tipo, double limiteInferior, double limiteSuperior, boolean pasos) {
         this.limiteInferior = limiteInferior;
         this.limiteSuperior = limiteSuperior;
         this.mostrarPasos = pasos;

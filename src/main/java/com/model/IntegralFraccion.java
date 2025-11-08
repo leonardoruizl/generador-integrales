@@ -3,7 +3,6 @@ package com.model;
 import java.util.Random;
 
 public class IntegralFraccion implements IntegralEstrategia {
-
     private int a, b, c, d;
 
     @Override
@@ -16,7 +15,7 @@ public class IntegralFraccion implements IntegralEstrategia {
     }
 
     @Override
-    public double calcularResultado(int limiteInferior, int limiteSuperior) {
+    public double calcularResultado(double limiteInferior, double limiteSuperior) {
         return F(limiteSuperior) - F(limiteInferior);
     }
 

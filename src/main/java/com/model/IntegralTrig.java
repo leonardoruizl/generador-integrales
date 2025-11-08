@@ -12,7 +12,7 @@ public class IntegralTrig implements IntegralEstrategia {
     }
 
     @Override
-    public double calcularResultado(int limiteInferior, int limiteSuperior) {
+    public double calcularResultado(double limiteInferior, double limiteSuperior) {
         return F(limiteSuperior) - F(limiteInferior);
     }
 

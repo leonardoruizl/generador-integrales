@@ -5,7 +5,7 @@ public interface IntegralEstrategia {
     void generarParametros();
 
     /** Calcula el resultado definido */
-    double calcularResultado(int a, int b);
+    double calcularResultado(double limiteInferior, double limiteSuperior);
 
     /** Genera representación LaTeX */
     String getLatex();

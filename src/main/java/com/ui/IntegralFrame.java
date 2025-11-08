@@ -6,6 +6,11 @@ import javax.swing.*;
 import java.awt.*;
 
 public class IntegralFrame extends JFrame {
+    private String tipo = "aleatoria";
+    private double limiteInferior = 0;
+    private double limiteSuperior = 1;
+    private boolean mostrarPasos = false;
+
     private Integral integral; // El modelo de la integral
     private final PanelIntegral panelIntegral;
     private ConfigIntegralDialog configDialog;
@@ -55,12 +60,22 @@ public class IntegralFrame extends JFrame {
     }
 
     private void generarNuevaIntegral() {
-        integral = new Integral();
+        integral = new Integral(tipo, limiteInferior, limiteSuperior, mostrarPasos);
 
         panelIntegral.mostrarIntegral(integral);
         panelOpciones.mostrarOpciones(integral.getOpciones());
         panelControl.reset();
 
+        revalidate();
+        repaint();
+    }
+
+    private void generarNuevaIntegralAleatoria() {
+        System.out.println("Generando Integral Aleatoria...");
+        integral = new Integral(tipo, limiteInferior, limiteSuperior, mostrarPasos);
+        panelIntegral.mostrarIntegral(integral);
+        panelOpciones.mostrarOpciones(integral.getOpciones());
+        panelControl.reset();
         revalidate();
         repaint();
     }
@@ -102,45 +117,40 @@ public class IntegralFrame extends JFrame {
         // Aquí puedes implementar la lógica para cambiar el tipo de integral
     }
 
-    private void generarNuevaIntegralAleatoria() {
-        System.out.println("Generando Integral Aleatoria...");
-        integral = new Integral(); // Genera una nueva integral aleatoria
-        panelIntegral.mostrarIntegral(integral);
-        panelOpciones.mostrarOpciones(integral.getOpciones());
-        panelControl.reset();
-        revalidate();
-        repaint();
-    }
-
     private void mostrarConfiguracionIntegral() {
-        ConfigIntegralDialog = new ConfigIntegralDialog(this);
+        configDialog = new ConfigIntegralDialog(this);
         configDialog.setVisible(true);
 
         if (!configDialog.getConfirmado()) {
-            return; // El usuario canceló la configuración
-        }
-
-        // Obtener los valores configurados
-        String tipo = configDialog.getTipoIntegral();
-        boolean mostrarPasos = configDialog.getMostrarPasos();
-        Double limiteInferior = configDialog.getLimiteInferior();
-        Double limiteSuperior = configDialog.getLimiteSuperior();
-
-        // Validaciones
-        if (limiteInferior != null && limiteSuperior != null && limiteInferior >= limiteSuperior) {
-            JOptionPane.showMessageDialog(this, "El límite inferior debe ser menor que el límite superior.", "Error de configuración", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
+        // Obtener los valores configurados
+        tipo = configDialog.getTipoIntegral();
+        mostrarPasos = configDialog.getMostrarPasos();
+
+        Double tmpInferior = configDialog.getLimiteInferior();
+        Double tmpSuperior = configDialog.getLimiteSuperior();
+
+        if (tmpInferior == null || tmpSuperior == null) {
+            JOptionPane.showMessageDialog(this,
+                    "Los límites deben ser números válidos.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (tmpInferior >= tmpSuperior) {
+            JOptionPane.showMessageDialog(this,
+                    "El límite inferior debe ser menor.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        limiteInferior = tmpInferior;
+        limiteSuperior = tmpSuperior;
+
         // Generar una nueva integral con la configuración seleccionada
-        integral = new Integral(tipo, limiteInferior, limiteSuperior, mostrarPasos);
-
-        panelIntegral.mostrarIntegral(integral);
-        panelOpciones.mostrarOpciones(integral.getOpciones());
-        panelControl.reset();
-
-        revalidate();
-        repaint();
+        generarNuevaIntegral();
     }
 
     private void verificarRespuesta() {
