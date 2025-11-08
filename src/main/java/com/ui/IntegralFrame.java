@@ -69,51 +69,19 @@ public class IntegralFrame extends JFrame {
         repaint();
     }
 
-//    private void generarNuevaIntegralAleatoria() {
-//        System.out.println("Generando Integral Aleatoria...");
-//        integral = new Integral(tipo, limiteInferior, limiteSuperior, mostrarPasos);
-//        panelIntegral.mostrarIntegral(integral);
-//        panelOpciones.mostrarOpciones(integral.getOpciones());
-//        panelControl.reset();
-//        revalidate();
-//        repaint();
-//    }
-
     private void crearMenu() {
         popupMenu = new JPopupMenu();
 
         JMenuItem configurar = new JMenuItem("Configurar Integral...");
         popupMenu.add(configurar);
 
-        popupMenu.addSeparator();
-
-        JMenuItem raiz = new JMenuItem("Raíz");
-        JMenuItem fraccion = new JMenuItem("Fracción");
-        JMenuItem trig = new JMenuItem("Trigonométrica");
-        JMenuItem aleatoria = new JMenuItem("Aleatoria");
-
-        popupMenu.add(raiz);
-        popupMenu.add(fraccion);
-        popupMenu.add(trig);
-        popupMenu.addSeparator();
-        popupMenu.add(aleatoria);
-
         // Listeners
         configurar.addActionListener(e -> mostrarConfiguracionIntegral());
-        raiz.addActionListener(e -> seleccionarTipoIntegral("raiz"));
-        fraccion.addActionListener(e -> seleccionarTipoIntegral("fraccion"));
-        trig.addActionListener(e -> seleccionarTipoIntegral("trigonométrica"));
-        aleatoria.addActionListener(e -> seleccionarTipoIntegral("aleatoria"));
     }
 
     private void mostrarMenu() {
         JButton boton = panelAppBar.getBotonMenu();
         popupMenu.show(boton, 0, boton.getHeight());
-    }
-
-    private void seleccionarTipoIntegral(String tipo) {
-        System.out.println("Tipo de integral seleccionado: " + tipo);
-        // Aquí puedes implementar la lógica para cambiar el tipo de integral
     }
 
     private void mostrarConfiguracionIntegral() {

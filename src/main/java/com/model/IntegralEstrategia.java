@@ -8,7 +8,7 @@ public interface IntegralEstrategia {
     double calcularResultado(double limiteInferior, double limiteSuperior);
 
     /** Genera representación LaTeX */
-    String getLatex();
+    String getIntegrandoLatex();
 
     /** Pasos de resolución (si aplica) */
     String getPasos();

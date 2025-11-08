@@ -23,8 +23,8 @@ public class IntegralRaiz implements IntegralEstrategia {
     }
 
     @Override
-    public String getLatex() {
-        return "\\int \\sqrt{" + a + "x + " + b + "}\\, dx";
+    public String getIntegrandoLatex() {
+        return "\\sqrt{" + a + "x + " + b + "}";
     }
 
     @Override

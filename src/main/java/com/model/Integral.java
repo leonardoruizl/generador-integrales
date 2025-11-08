@@ -53,10 +53,23 @@ public class Integral {
 
     private void resolver() {
         resultado = estrategia.calcularResultado(limiteInferior, limiteSuperior);
-        latex = estrategia.getLatex();
+        latex = String.format(
+                "\\int_{%s}^{%s} %s \\, dx",
+                fmt(limiteInferior),
+                fmt(limiteSuperior),
+                estrategia.getIntegrandoLatex()
+        );
         if (mostrarPasos) {
             estrategia.getPasos();
         }
+    }
+
+    // Formatea números para LaTeX
+    private String fmt(double x) {
+        if (x == (long) x) {
+            return String.format("%d", (long) x);
+        }
+        return String.valueOf(x);
     }
 
     // Genera 5 opciones distintas (una correcta)

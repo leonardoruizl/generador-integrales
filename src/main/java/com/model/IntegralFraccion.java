@@ -26,9 +26,10 @@ public class IntegralFraccion implements IntegralEstrategia {
     }
 
     @Override
-    public String getLatex() {
-        return "\\int \\frac{" + a + "x + " + b + "}{" + c + "x + " + d + "}\\, dx";
+    public String getIntegrandoLatex() {
+        return "\\frac{" + a + "x + " + b + "}{" + c + "x + " + d + "}";
     }
+
 
     @Override
     public String getPasos() {

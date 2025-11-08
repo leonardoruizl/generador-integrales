@@ -21,15 +21,15 @@ public class IntegralTrig implements IntegralEstrategia {
     }
 
     @Override
-    public String getLatex() {
-        return "\\int \\sin(" + k + "x) \\, dx";
+    public String getIntegrandoLatex() {
+        return "\\sin(" + k + "x)";
     }
 
     @Override
     public String getPasos() {
         return """
-        Sea u = kx → du = k dx
-        ∫sin(kx) dx = -cos(kx)/k
-        """;
+                Sea u = kx → du = k dx
+                ∫sin(kx) dx = -cos(kx)/k
+                """;
     }
 }
