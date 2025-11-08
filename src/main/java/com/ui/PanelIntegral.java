@@ -19,16 +19,13 @@ public class PanelIntegral extends JPanel {
     }
 
     public void mostrarIntegral(Integral integral) {
-        // Crear cadena LaTeX
-        String latex = String.format(
-                "\\int_{%d}^{%d} \\frac{%dx^{%d}}{(%dx^{%d} + %d)^{%d}} \\, dx",
-                integral.getA(), integral.getB(),
-                integral.getK(), integral.getM(),
-                integral.getC(), integral.getM() + 1,
-                integral.getD(), integral.getN()
-        );
+        String latex = integral.getLatex();
 
-        // Crear y mostrar la integral con LaTeX
+        if (latex == null || latex.isEmpty()) {
+            latexLabel.setText("La integral no está disponible.");
+            return;
+        }
+
         TeXFormula formula = new TeXFormula(latex);
         TeXIcon icon = formula.createTeXIcon(TeXConstants.STYLE_DISPLAY, 32);
         latexLabel.setIcon(icon);
