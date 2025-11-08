@@ -1,138 +1,90 @@
 package com.model;
 
+import java.util.Locale;
+import java.util.Objects;
 import java.util.Random;
 
 public class Integral {
-    private IntegralEstrategia estrategia;
+    private final IntegralEstrategia estrategia;
     private final double limiteInferior, limiteSuperior;
     private final boolean mostrarPasos;
 
     private double resultado;
     private double[] opciones;
     private int opcionCorrecta;
-
     private String latex;
 
-    public Integral(String tipo, double limiteInferior, double limiteSuperior, boolean pasos) {
-        this.limiteInferior = limiteInferior;
-        this.limiteSuperior = limiteSuperior;
+    public Integral(String tipo, double limiteInf, double limiteSup, boolean pasos) {
+        this.limiteInferior = limiteInf;
+        this.limiteSuperior = limiteSup;
         this.mostrarPasos = pasos;
 
-        seleccionarEstrategia(tipo);
+        this.estrategia = crearEstrategia(tipo);
         estrategia.generarParametros();
+
         resolver();
         generarOpciones();
     }
 
-    private void seleccionarEstrategia(String tipo) {
-        Random r = new Random();
+    private IntegralEstrategia crearEstrategia(String tipo) {
+        Objects.requireNonNull(tipo, "tipo no puede ser null");
+        String key = tipo.toLowerCase(Locale.ROOT);
 
-        switch (tipo) {
-            case "raiz":
-                estrategia = new IntegralRaiz();
-                break;
-            case "fraccion":
-                estrategia = new IntegralFraccion();
-                break;
-            case "trig":
-                estrategia = new IntegralTrig();
-                break;
-            case "aleatoria":
-                // Elegir un tipo al azar
-                String[] tipos = {"raiz", "fraccion", "trig"};
-                estrategia = switch (tipos[r.nextInt(tipos.length)]) {
-                    case "raiz" -> new IntegralRaiz();
-                    case "fraccion" -> new IntegralFraccion();
-                    default -> new IntegralTrig();
-                };
-                break;
-            default:
-                throw new IllegalArgumentException("Tipo desconocido");
-        }
+        return switch (key) {
+            case "raiz" -> new IntegralRaiz();
+            case "fraccion" -> new IntegralFraccion();
+            case "trig" -> new IntegralTrig();
+
+            case "aleatoria" -> {
+                String[] pool = {"raiz", "fraccion", "trig"};
+                yield crearEstrategia(pool[new Random().nextInt(pool.length)]);
+            }
+
+            default -> throw new IllegalArgumentException("Tipo desconocido: " + tipo);
+        };
     }
 
     private void resolver() {
         resultado = estrategia.calcularResultado(limiteInferior, limiteSuperior);
+
         latex = String.format(
                 "\\int_{%s}^{%s} %s \\, dx",
                 fmt(limiteInferior),
                 fmt(limiteSuperior),
                 estrategia.getIntegrandoLatex()
         );
-        if (mostrarPasos) {
-            estrategia.getPasos();
-        }
     }
 
-    // Formatea números para LaTeX
     private String fmt(double x) {
-        if (x == (long) x) {
-            return String.format("%d", (long) x);
-        }
+        if (x == (long) x) return String.format("%d", (long) x);
         return String.valueOf(x);
     }
 
-    // Genera 5 opciones distintas (una correcta)
     private void generarOpciones() {
         opciones = new double[5];
-        Random rand = new Random();
-        opcionCorrecta = rand.nextInt(5);
+        Random r = new Random();
+        opcionCorrecta = r.nextInt(opciones.length);
 
-        // Evitar cero absoluto
-        if (Math.abs(resultado) < 0.00001) {
-            resultado = 0;
+        // Resultado pequeño → evita ruido numérico
+        double base = Math.abs(resultado) < 1e-5 ? 0.0 : resultado;
 
-            for (int i = 0; i < opciones.length; i++) {
-                opciones[i] = (Math.random() - 0.5) * 0.2; // ±0.1
-            }
-            opciones[opcionCorrecta] = resultado;
-            return;
-        }
-
-        // Índice de las opciones incorrectas
-        int[] indices = {0, 1, 2, 3, 4};
-        // Sacar el índice de la opción correcta
-        int temp = indices[opcionCorrecta];
-        indices[opcionCorrecta] = indices[4];
-        indices[4] = temp;
-
-        // Generar 3 opciones cercanas con errores comunes
-        for (int i = 0; i < 3; i++) {
-            int idx = indices[i];
-            double variacion = 0;
-
-            int tipoError = rand.nextInt(3);
-            switch (tipoError) {
-                case 0:
-                    // signo equivocado
-                    variacion = -resultado * (rand.nextDouble() * 0.1); // hasta ±10%
-                    break;
-                case 1:
-                    // factor multiplicativo olvidado
-                    variacion = resultado * (0.1 + rand.nextDouble() * 0.2); // +10% a +30%
-                    if (rand.nextBoolean()) variacion *= -1;
-                    break;
-                case 2:
-                    // redondeo parcial o límite mal usado
-                    variacion = (rand.nextDouble() - 0.5) * 0.2 * Math.abs(resultado); // ±10%
-                    break;
-            }
-            opciones[idx] = resultado + variacion;
-        }
-
-        // Generar 2 opciones lejanas
-        for (int i = 3; i < 5; i++) {
-            int idx = indices[i];
-            double variacion = (rand.nextDouble() - 0.5) * 2 * Math.abs(resultado); // ±100%
-            // Aumentamos la diferencia si accidentalmente se acerca al resultado
-            if (Math.abs(variacion) < 0.3 * Math.abs(resultado)) {
-                variacion += (variacion > 0 ? 0.3 : -0.3) * Math.abs(resultado);
-            }
-            opciones[idx] = resultado + variacion;
+        // Generar opciones cercanas
+        for (int i = 0; i < opciones.length; i++) {
+            opciones[i] = base + variacion(base, r);
         }
 
         // Asignar la opción correcta
-        opciones[opcionCorrecta] = resultado;
+        opciones[opcionCorrecta] = base;
+        resultado = base;
+    }
+
+    private double variacion(double base, Random r) {
+        if (base == 0) {
+            return (r.nextDouble() - 0.5) * 0.2;
+        }
+        // Variación hasta ±30% aprox
+        double factor = 0.3 * (r.nextDouble() - 0.5);
+        return base * factor;
     }
 
     public double[] getOpciones() {
@@ -149,5 +101,9 @@ public class Integral {
 
     public String getLatex() {
         return latex;
+    }
+
+    public String getPasos() {
+        return mostrarPasos ? estrategia.getPasos() : "";
     }
 }

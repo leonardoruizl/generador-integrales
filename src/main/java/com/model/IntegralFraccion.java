@@ -15,29 +15,33 @@ public class IntegralFraccion implements IntegralEstrategia {
     }
 
     @Override
-    public double calcularResultado(double limiteInferior, double limiteSuperior) {
-        return F(limiteSuperior) - F(limiteInferior);
+    public double calcularResultado(double limInf, double limiteSup) {
+        return F(limiteSup) - F(limInf);
     }
 
     private double F(double x) {
-        double term1 = (double) a / c * x;
-        double term2 = (double) (b * c - a * d) / (c * c) * Math.log(Math.abs(c * x + d));
-        return term1 + term2;
+        double k1 = (double) a / c;
+        double k2 = (double) (b * c - a * d) / (c * c);
+        return k1 * x + k2 * Math.log(Math.abs(c * x + d));
     }
 
     @Override
     public String getIntegrandoLatex() {
-        return "\\frac{" + a + "x + " + b + "}{" + c + "x + " + d + "}";
+        return String.format("\\frac{%dx + %d}{%dx + %d}", a, b, c, d);
     }
-
 
     @Override
     public String getPasos() {
         return """
-                Separación en suma:
-                (ax + b)/(cx + d) = (a/c) + (bc - ad)/(c^2(cx+d))
-                Se integra:
-                ∫(a/c) dx + ∫((bc-ad)/(c^2))/ (cx + d) dx
+                Se reescribe:
+                
+                (ax + b)/(cx + d)
+                = (a/c) + (bc - ad)/(c^2 (cx + d))
+                
+                Entonces:
+                
+                ∫(ax + b)/(cx + d) dx
+                = (a/c)x + (bc - ad)/(c^2) ln|cx + d| + C
                 """;
     }
 }
