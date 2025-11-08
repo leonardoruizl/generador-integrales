@@ -13,7 +13,6 @@ public class IntegralFrame extends JFrame {
 
     private Integral integral; // El modelo de la integral
     private final PanelIntegral panelIntegral;
-    private ConfigIntegralDialog configDialog;
     private JPopupMenu popupMenu;
     private final PanelAppBar panelAppBar;
     private final PanelOpciones panelOpciones;
@@ -70,15 +69,15 @@ public class IntegralFrame extends JFrame {
         repaint();
     }
 
-    private void generarNuevaIntegralAleatoria() {
-        System.out.println("Generando Integral Aleatoria...");
-        integral = new Integral(tipo, limiteInferior, limiteSuperior, mostrarPasos);
-        panelIntegral.mostrarIntegral(integral);
-        panelOpciones.mostrarOpciones(integral.getOpciones());
-        panelControl.reset();
-        revalidate();
-        repaint();
-    }
+//    private void generarNuevaIntegralAleatoria() {
+//        System.out.println("Generando Integral Aleatoria...");
+//        integral = new Integral(tipo, limiteInferior, limiteSuperior, mostrarPasos);
+//        panelIntegral.mostrarIntegral(integral);
+//        panelOpciones.mostrarOpciones(integral.getOpciones());
+//        panelControl.reset();
+//        revalidate();
+//        repaint();
+//    }
 
     private void crearMenu() {
         popupMenu = new JPopupMenu();
@@ -103,7 +102,7 @@ public class IntegralFrame extends JFrame {
         configurar.addActionListener(e -> mostrarConfiguracionIntegral());
         raiz.addActionListener(e -> seleccionarTipoIntegral("raiz"));
         fraccion.addActionListener(e -> seleccionarTipoIntegral("fraccion"));
-        trig.addActionListener(e -> seleccionarTipoIntegral("trigonometrica"));
+        trig.addActionListener(e -> seleccionarTipoIntegral("trigonométrica"));
         aleatoria.addActionListener(e -> seleccionarTipoIntegral("aleatoria"));
     }
 
@@ -118,7 +117,7 @@ public class IntegralFrame extends JFrame {
     }
 
     private void mostrarConfiguracionIntegral() {
-        configDialog = new ConfigIntegralDialog(this);
+        ConfigIntegralDialog configDialog = new ConfigIntegralDialog(this);
         configDialog.setVisible(true);
 
         if (!configDialog.getConfirmado()) {

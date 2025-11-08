@@ -4,7 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ConfigIntegralDialog extends JDialog {
-    private JRadioButton rbRaiz, rbFraccion, rbTrig, rbAleatoria;
+    private JRadioButton rbRaiz;
+    private JRadioButton rbFraccion;
+    private JRadioButton rbTrig;
     private JCheckBox cbMostrarPasos;
     private JTextField txtLimiteInferior, txtLimiteSuperior;
     private boolean confirmado = false;
@@ -26,7 +28,7 @@ public class ConfigIntegralDialog extends JDialog {
         rbRaiz = new JRadioButton("Raíz");
         rbFraccion = new JRadioButton("Fracción");
         rbTrig = new JRadioButton("Trigonométrica");
-        rbAleatoria = new JRadioButton("Aleatoria", true);
+        JRadioButton rbAleatoria = new JRadioButton("Aleatoria", true);
 
         ButtonGroup grupo = new ButtonGroup();
         grupo.add(rbRaiz);

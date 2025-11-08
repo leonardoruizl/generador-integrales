@@ -4,15 +4,14 @@ import java.util.Random;
 
 public class Integral {
     private IntegralEstrategia estrategia;
-    private double limiteInferior, limiteSuperior;
-    private boolean mostrarPasos;
+    private final double limiteInferior, limiteSuperior;
+    private final boolean mostrarPasos;
 
     private double resultado;
     private double[] opciones;
     private int opcionCorrecta;
 
     private String latex;
-    private String pasos;
 
     public Integral(String tipo, double limiteInferior, double limiteSuperior, boolean pasos) {
         this.limiteInferior = limiteInferior;
@@ -55,7 +54,9 @@ public class Integral {
     private void resolver() {
         resultado = estrategia.calcularResultado(limiteInferior, limiteSuperior);
         latex = estrategia.getLatex();
-        pasos = mostrarPasos ? estrategia.getPasos() : "";
+        if (mostrarPasos) {
+            estrategia.getPasos();
+        }
     }
 
     // Genera 5 opciones distintas (una correcta)
@@ -135,9 +136,5 @@ public class Integral {
 
     public String getLatex() {
         return latex;
-    }
-
-    public String getPasos() {
-        return pasos;
     }
 }
