@@ -8,17 +8,15 @@ import java.util.Random;
 public class Integral {
     private final IntegralEstrategia estrategia;
     private final double limiteInferior, limiteSuperior;
-    private final boolean mostrarPasos;
 
     private double resultado;
     private double[] opciones;
     private int opcionCorrecta;
     private String latex;
 
-    public Integral(String tipo, double limiteInf, double limiteSup, boolean pasos) {
+    public Integral(String tipo, double limiteInf, double limiteSup) {
         this.limiteInferior = limiteInf;
         this.limiteSuperior = limiteSup;
-        this.mostrarPasos = pasos;
 
         this.estrategia = crearEstrategia(tipo);
         estrategia.generarParametros();

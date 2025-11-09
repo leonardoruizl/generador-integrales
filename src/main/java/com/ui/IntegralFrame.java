@@ -76,7 +76,7 @@ public class IntegralFrame extends JFrame {
             limiteSuperior = b;
         }
 
-        integral = new Integral(tipo, limiteInferior, limiteSuperior, mostrarPasos);
+        integral = new Integral(tipo, limiteInferior, limiteSuperior);
 
         panelIntegral.mostrarIntegral(integral);
         panelOpciones.mostrarOpciones(integral.getOpciones());
