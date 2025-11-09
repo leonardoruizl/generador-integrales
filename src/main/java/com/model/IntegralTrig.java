@@ -1,5 +1,6 @@
 package com.model;
 
+import java.util.List;
 import java.util.Random;
 
 public class IntegralTrig implements IntegralEstrategia {
@@ -29,16 +30,24 @@ public class IntegralTrig implements IntegralEstrategia {
     }
 
     @Override
-    public String getPasos() {
-        return """
-                Sustitución:
-                Sea u = kx
-                ⇒ du = k dx → dx = du / k
-                
-                ∫ sin(kx) dx
-                = (1/k) ∫ sin(u) du
-                = -(1/k) cos(u)
-                = -cos(kx)/k
-                """;
+    public List<String> getPasos() {
+        return List.of(
+                String.format("Sea \\(u = %dx\\), entonces \\(du = %d\\,dx\\).", k, k),
+                """
+                        \\[
+                        \\int \\sin(kx) dx = \\,\\frac{1}{k} \\int \\sin(u) \\; du
+                        \\]
+                        """,
+                """
+                        \\[
+                        = -\\frac{1}{k} \\cos(u)
+                        \\]
+                        """,
+                """
+                        \\[
+                        = -\\frac{1}{k} \\cos(kx)
+                        \\]
+                        """
+        );
     }
 }

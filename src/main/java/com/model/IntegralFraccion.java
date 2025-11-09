@@ -1,5 +1,6 @@
 package com.model;
 
+import java.util.List;
 import java.util.Random;
 
 public class IntegralFraccion implements IntegralEstrategia {
@@ -31,17 +32,25 @@ public class IntegralFraccion implements IntegralEstrategia {
     }
 
     @Override
-    public String getPasos() {
-        return """
-                Se reescribe:
-                
-                (ax + b)/(cx + d)
-                = (a/c) + (bc - ad)/(c^2 (cx + d))
-                
-                Entonces:
-                
-                ∫(ax + b)/(cx + d) dx
-                = (a/c)x + (bc - ad)/(c^2) ln|cx + d| + C
-                """;
+    public List<String> getPasos() {
+        return List.of(
+                "Reescribimos:",
+                String.format("""
+                        \\[
+                        \\frac{%dx + %d}{%dx + %d}
+                        = \\frac{%d}{%d}
+                        + \\frac{%d}{%d(cx + d)}
+                        \\]
+                        """, a, b, c, d, a, c, (b * c - a * d), (c * c)),
+                """
+                        Entonces:
+                        
+                        \\[
+                        \\int \\frac{ax + b}{cx + d} dx
+                        = \\frac{a}{c}x
+                        + \\frac{bc - ad}{c^2}\\ln|cx + d| + C
+                        \\]
+                        """
+        );
     }
 }

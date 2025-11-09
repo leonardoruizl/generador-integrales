@@ -1,5 +1,6 @@
 package com.model;
 
+import java.util.List;
 import java.util.Random;
 
 public class IntegralRaiz implements IntegralEstrategia {
@@ -43,16 +44,25 @@ public class IntegralRaiz implements IntegralEstrategia {
     }
 
     @Override
-    public String getPasos() {
-        return """
-                Sustitución:
-                Sea u = ax + b
-                ⇒ du = a dx  → dx = du / a
-                
-                ∫√(ax + b) dx
-                = (1/a) ∫√u du
-                = (1/a) * (2/3)u^{3/2}
-                = (2 / (3a))(ax + b)^{3/2}
-                """;
+    public List<String> getPasos() {
+        return List.of(
+                String.format("Sea \\(u = %dx + %d\\) ⇒ \\(du = %d\\,dx\\).", a, b, a),
+                """
+                        \\[
+                        \\int \\sqrt{ax + b} \\, dx
+                        = \\frac{1}{a} \\int \\sqrt{u} \\, du
+                        \\]
+                        """,
+                """
+                        \\[
+                        = \\frac{1}{a} \\cdot \\frac{2}{3} u^{3/2}
+                        \\]
+                        """,
+                """
+                        \\[
+                        = \\frac{2}{3a}(ax + b)^{3/2}
+                        \\]
+                        """
+        );
     }
 }

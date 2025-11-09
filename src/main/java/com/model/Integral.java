@@ -1,5 +1,6 @@
 package com.model;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
@@ -108,7 +109,7 @@ public class Integral {
         return latex;
     }
 
-    public String getPasos() {
-        return mostrarPasos ? estrategia.getPasos() : "";
+    public List<String> getPasos() {
+        return estrategia.getPasos();
     }
 }

@@ -134,8 +134,6 @@ public class IntegralFrame extends JFrame {
             limiteInferior = tmpInferior;
             limiteSuperior = tmpSuperior;
         }
-
-        generarNuevaIntegral();
     }
 
     private void verificarRespuesta() {
@@ -156,6 +154,13 @@ public class IntegralFrame extends JFrame {
             String msg = String.format("<html><span style='color:red; font-weight:bold;'>Incorrecto.</span> " +
                     "La respuesta era <span style='color:green;'>%.5f</span></html>", integral.getResultado());
             panelControl.mostrarResultado(msg);
+        }
+
+        if (mostrarPasos) {
+            java.util.List<String> pasos = integral.getPasos();
+            if (pasos != null && !pasos.isEmpty()) {
+                new PasosFrame(pasos);
+            }
         }
     }
 }

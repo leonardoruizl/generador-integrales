@@ -1,5 +1,7 @@
 package com.model;
 
+import java.util.List;
+
 public interface IntegralEstrategia {
     /** Genera parámetros aleatorios internos */
     void generarParametros();
@@ -11,5 +13,5 @@ public interface IntegralEstrategia {
     String getIntegrandoLatex();
 
     /** Pasos de resolución (si aplica) */
-    String getPasos();
+    List<String> getPasos();
 }
