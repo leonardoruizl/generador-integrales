@@ -34,6 +34,9 @@ public class PasosFrame extends JFrame {
         btnAnterior = new JButton("Anterior");
         btnSiguiente = new JButton("Siguiente");
 
+        btnAnterior.setFocusPainted(false);
+        btnSiguiente.setFocusPainted(false);
+
         btnAnterior.addActionListener(e -> mostrarAnterior());
         btnSiguiente.addActionListener(e -> mostrarSiguiente());
 
