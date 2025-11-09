@@ -65,27 +65,46 @@ public class ConfigIntegralDialog extends JDialog {
         pasosPanel.add(cbMostrarPasos);
 
         // Panel de límites
-        JPanel limitesPanel = new JPanel(new GridLayout(2, 2, 5, 5));
+        JPanel limitesPanel = new JPanel(new GridBagLayout());
         limitesPanel.setBorder(BorderFactory.createTitledBorder("Límites"));
 
-        limitesPanel.add(new JLabel("Límite inferior:"));
-        txtLimiteInferior = new JTextField("0", 5);
-        limitesPanel.add(txtLimiteInferior);
+        GridBagConstraints c = new GridBagConstraints();
+        c.insets = new Insets(5, 5, 5, 5);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1.0;
 
-        limitesPanel.add(new JLabel("Límite superior:"));
-        txtLimiteSuperior = new JTextField("1", 5);
-        limitesPanel.add(txtLimiteSuperior);
+        c.gridx = 0;
+        c.gridy = 0;
+        c.anchor = GridBagConstraints.WEST;
+        limitesPanel.add(new JLabel("Límite inferior:"), c);
+
+        txtLimiteInferior = new JTextField("0", 8);
+        c.gridx = 1;
+        limitesPanel.add(txtLimiteInferior, c);
+
+        c.gridx = 0;
+        c.gridy = 1;
+        limitesPanel.add(new JLabel("Límite superior:"), c);
+
+        txtLimiteSuperior = new JTextField("1", 8);
+        c.gridx = 1;
+        limitesPanel.add(txtLimiteSuperior, c);
 
         cbAleatorio = new JCheckBox("Generar límites aleatorios");
+        c.gridx = 0;
+        c.gridy = 2;
+        c.gridwidth = 2; // ocupa las dos columnas
+        c.anchor = GridBagConstraints.WEST;
+        limitesPanel.add(cbAleatorio, c);
+
         cbAleatorio.addActionListener(e -> {
             boolean aleatorio = cbAleatorio.isSelected();
             txtLimiteInferior.setEnabled(!aleatorio);
             txtLimiteSuperior.setEnabled(!aleatorio);
         });
-        // sincroniza estado inicial
+
         txtLimiteInferior.setEnabled(!cbAleatorio.isSelected());
         txtLimiteSuperior.setEnabled(!cbAleatorio.isSelected());
-        limitesPanel.add(cbAleatorio);
 
         // Panel de botones
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -103,7 +122,9 @@ public class ConfigIntegralDialog extends JDialog {
         panelBotones.add(btnCancelar);
 
         // Organizar el diálogo
-        JPanel centroPanel = new JPanel(new GridLayout(3, 1));
+        JPanel centroPanel = new JPanel();
+        centroPanel.setLayout(new BoxLayout(centroPanel, BoxLayout.Y_AXIS));
+
         centroPanel.add(tipoPanel);
         centroPanel.add(pasosPanel);
         centroPanel.add(limitesPanel);
