@@ -139,8 +139,10 @@ public class ConfigIntegralDialog extends JDialog {
 
         JButton btnAceptar = new JButton("Aceptar");
         btnAceptar.addActionListener(e -> {
-            confirmado = true;
-            dispose();
+            if (validarLimites()) {
+                confirmado = true;
+                dispose();
+            }
         });
 
         JButton btnCancelar = new JButton("Cancelar");
@@ -190,6 +192,31 @@ public class ConfigIntegralDialog extends JDialog {
         if (rbFacil.isSelected()) return Dificultad.FACIL;
         if (rbDificil.isSelected()) return Dificultad.DIFICIL;
         return Dificultad.MEDIA;
+    }
+
+    private boolean validarLimites() {
+        if (cbAleatorio.isSelected()) {
+            return true;
+        }
+
+        Double limInf = getLimiteInferior();
+        Double limSup = getLimiteSuperior();
+
+        if (limInf == null || limSup == null) {
+            JOptionPane.showMessageDialog(this,
+                    "Los límites deben ser números válidos.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (limInf >= limSup) {
+            JOptionPane.showMessageDialog(this,
+                    "El límite inferior debe ser menor al superior.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        return true;
     }
 
     public Double getLimiteInferior() {

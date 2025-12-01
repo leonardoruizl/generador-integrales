@@ -48,11 +48,17 @@ public class Integral {
     }
 
     private void resolver() {
-        try {
-            resultado = estrategia.calcularResultado(limiteInferior, limiteSuperior);
-        } catch (ArithmeticException e) {
-            estrategia.generarParametros(dificultad);
-            resolver();
+        final int maxIntentos = 3;
+        for (int i = 0; i < maxIntentos; i++) {
+            try {
+                resultado = estrategia.calcularResultado(limiteInferior, limiteSuperior);
+                break;
+            } catch (ArithmeticException e) {
+                estrategia.generarParametros(dificultad);
+                if (i == maxIntentos - 1) {
+                    throw new IllegalStateException("No se pudo generar una integral válida tras varios intentos", e);
+                }
+            }
         }
 
         latex = String.format(

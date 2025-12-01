@@ -26,8 +26,14 @@ public class PanelIntegral extends JPanel {
             return;
         }
 
-        TeXFormula formula = new TeXFormula(latex);
-        TeXIcon icon = formula.createTeXIcon(TeXConstants.STYLE_DISPLAY, 32);
-        latexLabel.setIcon(icon);
+        try {
+            TeXFormula formula = new TeXFormula(latex);
+            TeXIcon icon = formula.createTeXIcon(TeXConstants.STYLE_DISPLAY, 32);
+            latexLabel.setIcon(icon);
+            latexLabel.setText(null);
+        } catch (Exception e) {
+            latexLabel.setIcon(null);
+            latexLabel.setText("No se pudo renderizar la integral.");
+        }
     }
 }

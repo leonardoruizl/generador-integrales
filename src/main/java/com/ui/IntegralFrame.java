@@ -5,6 +5,9 @@ import com.model.Integral;
 
 import javax.swing.*;
 import java.awt.*;
+import java.text.NumberFormat;
+import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 public class IntegralFrame extends JFrame {
@@ -21,6 +24,8 @@ public class IntegralFrame extends JFrame {
     private final PanelAppBar panelAppBar;
     private final PanelOpciones panelOpciones;
     private final PanelControl panelControl;
+    private final NumberFormat numberFormat;
+    private List<String> pasosActuales;
 
     public IntegralFrame() {
         setTitle("Generador de Integrales");
@@ -37,7 +42,10 @@ public class IntegralFrame extends JFrame {
 
         panelIntegral = new PanelIntegral();
         panelOpciones = new PanelOpciones();
-        panelControl = new PanelControl(e -> verificarRespuesta());
+        panelControl = new PanelControl(e -> verificarRespuesta(), e -> mostrarPasos());
+        numberFormat = NumberFormat.getNumberInstance(new Locale("es", "ES"));
+        numberFormat.setMaximumFractionDigits(5);
+        numberFormat.setMinimumFractionDigits(0);
 
         // Panel superior
         JPanel panelPrincipal = new JPanel();
@@ -78,14 +86,21 @@ public class IntegralFrame extends JFrame {
             limiteSuperior = b;
         }
 
-        integral = new Integral(tipo, limiteInferior, limiteSuperior, dificultad);
+        try {
+            integral = new Integral(tipo, limiteInferior, limiteSuperior, dificultad);
 
-        panelIntegral.mostrarIntegral(integral);
-        panelOpciones.mostrarOpciones(integral.getOpciones());
-        panelControl.reset();
+            panelIntegral.mostrarIntegral(integral);
+            panelOpciones.mostrarOpciones(integral.getOpciones());
+            panelControl.reset();
+            pasosActuales = null;
 
-        revalidate();
-        repaint();
+            revalidate();
+            repaint();
+        } catch (IllegalStateException e) {
+            JOptionPane.showMessageDialog(this,
+                    "No se pudo generar una integral válida. Intenta nuevamente.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void crearMenu() {
@@ -117,25 +132,8 @@ public class IntegralFrame extends JFrame {
         dificultad = configDialog.getDificultadSeleccionada();
 
         if (!limitesAleatorios) {
-            Double tmpInferior = configDialog.getLimiteInferior();
-            Double tmpSuperior = configDialog.getLimiteSuperior();
-
-            if (tmpInferior == null || tmpSuperior == null) {
-                JOptionPane.showMessageDialog(this,
-                        "Los límites deben ser números válidos.",
-                        "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            if (tmpInferior >= tmpSuperior) {
-                JOptionPane.showMessageDialog(this,
-                        "El límite inferior debe ser menor.",
-                        "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            limiteInferior = tmpInferior;
-            limiteSuperior = tmpSuperior;
+            limiteInferior = configDialog.getLimiteInferior();
+            limiteSuperior = configDialog.getLimiteSuperior();
         }
     }
 
@@ -147,23 +145,39 @@ public class IntegralFrame extends JFrame {
             return;
         }
 
-        // Deshabilitar opciones
-        panelOpciones.setOpcionesHabilitadas(false);
+        // Deshabilitar opciones y resaltarlas
+        panelOpciones.resaltarRespuestas(integral.getOpcionCorrecta(), seleccion);
 
         // Mostrar resultado
         if (seleccion == integral.getOpcionCorrecta()) {
             panelControl.mostrarResultado("<html><span style='color:green; font-weight:bold;'>¡Correcto!</span></html>");
         } else {
             String msg = String.format("<html><span style='color:red; font-weight:bold;'>Incorrecto.</span> " +
-                    "La respuesta era <span style='color:green;'>%.5f</span></html>", integral.getResultado());
+                    "La respuesta era <span style='color:green;'>%s</span></html>", numberFormat.format(integral.getResultado()));
             panelControl.mostrarResultado(msg);
         }
 
-        if (mostrarPasos) {
-            java.util.List<String> pasos = integral.getPasos();
-            if (pasos != null && !pasos.isEmpty()) {
-                new PasosFrame(pasos);
-            }
+        pasosActuales = integral.getPasos();
+        panelControl.habilitarVerPasos(mostrarPasos);
+    }
+
+    private void mostrarPasos() {
+        if (!mostrarPasos) {
+            JOptionPane.showMessageDialog(this,
+                    "Activa 'Mostrar pasos de solución' en la configuración para verlos.",
+                    "Pasos no disponibles",
+                    JOptionPane.INFORMATION_MESSAGE);
+            return;
         }
+
+        if (pasosActuales == null || pasosActuales.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "No hay pasos disponibles para esta integral.",
+                    "Pasos no disponibles",
+                    JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        new PasosFrame(pasosActuales);
     }
 }
