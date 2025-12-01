@@ -3,13 +3,21 @@ package com.model;
 import java.util.List;
 import java.util.Random;
 
+import com.model.Dificultad;
+
 public class IntegralTrig implements IntegralEstrategia {
     private static final Random RAND = new Random();
     private int k;
 
     @Override
-    public void generarParametros() {
-        k = RAND.nextInt(5) + 1;
+    public void generarParametros(Dificultad dificultad) {
+        int rangoMax = switch (dificultad) {
+            case FACIL -> 3;
+            case DIFICIL -> 10;
+            default -> 6;
+        };
+
+        k = RAND.nextInt(rangoMax) + 1;
     }
 
     @Override

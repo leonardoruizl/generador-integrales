@@ -5,21 +5,25 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
 
+import com.model.Dificultad;
+
 public class Integral {
     private final IntegralEstrategia estrategia;
     private final double limiteInferior, limiteSuperior;
+    private final Dificultad dificultad;
 
     private double resultado;
     private double[] opciones;
     private int opcionCorrecta;
     private String latex;
 
-    public Integral(String tipo, double limiteInf, double limiteSup) {
+    public Integral(String tipo, double limiteInf, double limiteSup, Dificultad dificultad) {
         this.limiteInferior = limiteInf;
         this.limiteSuperior = limiteSup;
+        this.dificultad = dificultad == null ? Dificultad.MEDIA : dificultad;
 
         this.estrategia = crearEstrategia(tipo);
-        estrategia.generarParametros();
+        estrategia.generarParametros(this.dificultad);
 
         resolver();
         generarOpciones();
@@ -47,7 +51,7 @@ public class Integral {
         try {
             resultado = estrategia.calcularResultado(limiteInferior, limiteSuperior);
         } catch (ArithmeticException e) {
-            estrategia.generarParametros();
+            estrategia.generarParametros(dificultad);
             resolver();
         }
 

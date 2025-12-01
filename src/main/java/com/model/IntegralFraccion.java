@@ -3,16 +3,33 @@ package com.model;
 import java.util.List;
 import java.util.Random;
 
+import com.model.Dificultad;
+
 public class IntegralFraccion implements IntegralEstrategia {
     private int a, b, c, d;
 
     @Override
-    public void generarParametros() {
+    public void generarParametros(Dificultad dificultad) {
         Random r = new Random();
-        a = r.nextInt(5) + 1;
-        b = r.nextInt(5) + 1;
-        c = r.nextInt(5) + 1;
-        d = r.nextInt(5) + 1;
+
+        int rangoMax = switch (dificultad) {
+            case FACIL -> 4;
+            case DIFICIL -> 12;
+            default -> 8;
+        };
+
+        a = valorConSigno(r, rangoMax, dificultad != Dificultad.FACIL);
+        b = valorConSigno(r, rangoMax, dificultad == Dificultad.DIFICIL);
+        c = Math.max(1, valorConSigno(r, rangoMax, true)); // evita c = 0
+        d = valorConSigno(r, rangoMax, dificultad != Dificultad.FACIL);
+    }
+
+    private int valorConSigno(Random r, int maximo, boolean permitirNegativo) {
+        int valor = r.nextInt(maximo) + 1;
+        if (permitirNegativo && r.nextBoolean()) {
+            valor *= -1;
+        }
+        return valor;
     }
 
     @Override
