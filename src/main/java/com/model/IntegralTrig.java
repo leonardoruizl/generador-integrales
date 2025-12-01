@@ -38,6 +38,11 @@ public class IntegralTrig implements IntegralEstrategia {
     }
 
     @Override
+    public double evaluarIntegrando(double x) {
+        return Math.sin(k * x);
+    }
+
+    @Override
     public List<String> getPasos() {
         return List.of(
                 String.format("Sea \\(u = %dx\\), entonces \\(du = %d\\,dx\\).", k, k),
