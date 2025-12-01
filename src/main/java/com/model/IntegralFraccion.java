@@ -34,6 +34,20 @@ public class IntegralFraccion implements IntegralEstrategia {
 
     @Override
     public double calcularResultado(double limInf, double limiteSup) {
+        double singularidad = -((double) d / c);
+        double inicio = Math.min(limInf, limiteSup);
+        double fin = Math.max(limInf, limiteSup);
+
+        if (singularidad >= inicio && singularidad <= fin) {
+            throw new ArithmeticException("La integral es impropia por una discontinuidad interna");
+        }
+
+        double denominadorInferior = c * limInf + d;
+        double denominadorSuperior = c * limiteSup + d;
+        if (denominadorInferior == 0 || denominadorSuperior == 0) {
+            throw new ArithmeticException("La integral tiene un punto no definido en los límites");
+        }
+
         return F(limiteSup) - F(limInf);
     }
 
