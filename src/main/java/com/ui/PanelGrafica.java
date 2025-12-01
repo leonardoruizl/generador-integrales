@@ -73,6 +73,10 @@ public class PanelGrafica extends JPanel {
             return;
         }
 
+        // Asegura que el eje X siempre sea visible para poder sombrear el área.
+        if (minY > 0) minY = 0;
+        if (maxY < 0) maxY = 0;
+
         if (minY == maxY) {
             minY -= 1;
             maxY += 1;
@@ -103,6 +107,20 @@ public class PanelGrafica extends JPanel {
             int x0 = (int) Math.round(mapX.apply(0));
             g2.drawLine(x0, margin, x0, height - margin);
         }
+
+        double baseY = mapY.apply(0);
+
+        // Área bajo la curva
+        Path2D area = new Path2D.Double();
+        area.moveTo(mapX.apply(xs.get(0)), baseY);
+        for (int i = 0; i < xs.size(); i++) {
+            area.lineTo(mapX.apply(xs.get(i)), mapY.apply(ys.get(i)));
+        }
+        area.lineTo(mapX.apply(xs.get(xs.size() - 1)), baseY);
+        area.closePath();
+
+        g2.setColor(new Color(33, 150, 243, 60));
+        g2.fill(area);
 
         // Curva
         g2.setColor(new Color(33, 150, 243));
