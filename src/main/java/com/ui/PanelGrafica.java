@@ -9,10 +9,24 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Path2D;
 import java.awt.geom.RoundRectangle2D;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PanelGrafica extends JPanel {
+    private static final Color COLOR_FONDO = new Color(248, 249, 252);
+    private static final Color COLOR_CONTORNO = new Color(200, 208, 218);
+    private static final Color COLOR_GRILLA = new Color(225, 228, 235);
+    private static final Color COLOR_GRILLA_SUAVE = new Color(235, 238, 244);
+    private static final Color COLOR_EJES = new Color(40, 40, 40);
+    private static final Color COLOR_CURVA = new Color(33, 150, 243);
+    private static final Color COLOR_AREA = new Color(120, 200, 120, 130);
+    private static final Stroke TRAZO_CURVA = new BasicStroke(2.2f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+    private static final Stroke TRAZO_EJES = new BasicStroke(2.4f);
+    private static final Stroke TRAZO_GRILLA = new BasicStroke(1f);
+    private static final Stroke TRAZO_GRILLA_SUAVE = new BasicStroke(0.6f);
+    private final DecimalFormat formato = new DecimalFormat("0.##");
+
     private Integral integral;
     private double limiteInferior;
     private double limiteSuperior;
@@ -22,14 +36,14 @@ public class PanelGrafica extends JPanel {
     private double vistaMaxY;
     private boolean vistaInicializada;
     private Point ultimoArrastre;
-    private final int margen = 40;
+    private final int margen = 48;
 
     public PanelGrafica() {
-        setPreferredSize(new Dimension(550, 220));
-        setBackground(Color.WHITE);
+        setPreferredSize(new Dimension(620, 620));
+        setBackground(COLOR_FONDO);
         setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(200, 200, 200)),
-                BorderFactory.createEmptyBorder(10, 10, 10, 10)
+                BorderFactory.createLineBorder(new Color(210, 215, 224)),
+                BorderFactory.createEmptyBorder(12, 12, 12, 12)
         ));
 
         MouseAdapter manejador = new MouseAdapter() {
@@ -121,7 +135,7 @@ public class PanelGrafica extends JPanel {
         List<Double> xs = new ArrayList<>();
         List<Double> ys = new ArrayList<>();
 
-        int muestras = 220;
+        int muestras = 420;
         for (int i = 0; i < muestras; i++) {
             double x = vistaMinX + i * (vistaMaxX - vistaMinX) / (muestras - 1);
             double y = integral.evaluarIntegrando(x);
@@ -156,8 +170,8 @@ public class PanelGrafica extends JPanel {
     private void dibujarCurva(Graphics2D g2, List<Double> xs, List<Double> ys,
                                java.util.function.DoubleFunction<Double> mapX,
                                java.util.function.DoubleFunction<Double> mapY) {
-        g2.setColor(new Color(33, 150, 243));
-        g2.setStroke(new BasicStroke(2f));
+        g2.setColor(COLOR_CURVA);
+        g2.setStroke(TRAZO_CURVA);
         Path2D path = new Path2D.Double();
         boolean started = false;
 
@@ -191,10 +205,10 @@ public class PanelGrafica extends JPanel {
             return;
         }
 
-        int barras = 60;
+        int barras = 70;
         double anchoPaso = (fin - inicio) / barras;
-        double opacidad = 90;
-        g2.setColor(new Color(33, 150, 243, (int) opacidad));
+        GradientPaint relleno = new GradientPaint(0, 0, COLOR_AREA, 0, (float) getHeight(), new Color(120, 200, 120, 40));
+        g2.setPaint(relleno);
 
         for (int i = 0; i < barras; i++) {
             double xCentro = inicio + (i + 0.5) * anchoPaso;
@@ -215,8 +229,10 @@ public class PanelGrafica extends JPanel {
             double y1 = Math.min(base, altura);
             double y2 = Math.max(base, altura);
 
-            Rectangle barra = new Rectangle((int) Math.round(x1), (int) Math.round(y1),
-                    (int) Math.max(1, Math.round(x2 - x1)), (int) Math.max(1, Math.round(y2 - y1)));
+            Shape barra = new RoundRectangle2D.Double(
+                    Math.round(x1), Math.round(y1),
+                    Math.max(1, Math.round(x2 - x1)), Math.max(1, Math.round(y2 - y1)),
+                    4, 4);
             g2.fill(barra);
         }
     }
@@ -227,8 +243,44 @@ public class PanelGrafica extends JPanel {
         double pasoX = calcularPaso(vistaMaxX - vistaMinX);
         double pasoY = calcularPaso(vistaMaxY - vistaMinY);
 
-        g2.setStroke(new BasicStroke(1f));
-        g2.setColor(new Color(230, 230, 230));
+        dibujarSubGrilla(g2, width, height, mapX, mapY, pasoX / 2.0, pasoY / 2.0);
+
+        g2.setStroke(TRAZO_GRILLA);
+        g2.setColor(COLOR_GRILLA);
+
+        for (double x = Math.ceil(vistaMinX / pasoX) * pasoX; x <= vistaMaxX; x += pasoX) {
+            int px = (int) Math.round(mapX.apply(x));
+            g2.drawLine(px, margen, px, height - margen);
+            dibujarEtiqueta(g2, formato.format(x), px, height - margen + 18, true);
+        }
+
+        for (double y = Math.ceil(vistaMinY / pasoY) * pasoY; y <= vistaMaxY; y += pasoY) {
+            int py = (int) Math.round(mapY.apply(y));
+            g2.drawLine(margen, py, width - margen, py);
+            dibujarEtiqueta(g2, formato.format(y), margen - 12, py + 4, false);
+        }
+
+        g2.setStroke(TRAZO_EJES);
+        g2.setColor(COLOR_EJES);
+
+        if (0 >= vistaMinY && 0 <= vistaMaxY) {
+            int y0 = (int) Math.round(mapY.apply(0));
+            g2.drawLine(margen, y0, width - margen + 8, y0);
+            dibujarFlecha(g2, width - margen + 8, y0, true);
+        }
+        if (0 >= vistaMinX && 0 <= vistaMaxX) {
+            int x0 = (int) Math.round(mapX.apply(0));
+            g2.drawLine(x0, height - margen, x0, margen - 8);
+            dibujarFlecha(g2, x0, margen - 8, false);
+        }
+    }
+
+    private void dibujarSubGrilla(Graphics2D g2, int width, int height,
+                                  java.util.function.DoubleFunction<Double> mapX,
+                                  java.util.function.DoubleFunction<Double> mapY,
+                                  double pasoX, double pasoY) {
+        g2.setStroke(TRAZO_GRILLA_SUAVE);
+        g2.setColor(COLOR_GRILLA_SUAVE);
 
         for (double x = Math.ceil(vistaMinX / pasoX) * pasoX; x <= vistaMaxX; x += pasoX) {
             int px = (int) Math.round(mapX.apply(x));
@@ -239,18 +291,38 @@ public class PanelGrafica extends JPanel {
             int py = (int) Math.round(mapY.apply(y));
             g2.drawLine(margen, py, width - margen, py);
         }
+    }
 
-        g2.setStroke(new BasicStroke(2f));
-        g2.setColor(new Color(120, 120, 120));
+    private void dibujarEtiqueta(Graphics2D g2, String texto, int x, int y, boolean esEjeX) {
+        if ("0".equals(texto) || "0.0".equals(texto)) {
+            return;
+        }
+        Font fuenteOriginal = g2.getFont();
+        g2.setFont(fuenteOriginal.deriveFont(Font.PLAIN, 11f));
+        g2.setColor(new Color(90, 90, 90));
 
-        if (0 >= vistaMinY && 0 <= vistaMaxY) {
-            int y0 = (int) Math.round(mapY.apply(0));
-            g2.drawLine(margen, y0, width - margen, y0);
+        int ancho = g2.getFontMetrics().stringWidth(texto);
+        if (esEjeX) {
+            g2.drawString(texto, x - ancho / 2, y);
+        } else {
+            g2.drawString(texto, x - ancho - 4, y + 4);
         }
-        if (0 >= vistaMinX && 0 <= vistaMaxX) {
-            int x0 = (int) Math.round(mapX.apply(0));
-            g2.drawLine(x0, margen, x0, height - margen);
+        g2.setFont(fuenteOriginal);
+    }
+
+    private void dibujarFlecha(Graphics2D g2, int x, int y, boolean horizontal) {
+        int tamaño = 8;
+        Polygon flecha = new Polygon();
+        if (horizontal) {
+            flecha.addPoint(x, y);
+            flecha.addPoint(x - tamaño, y - tamaño / 2);
+            flecha.addPoint(x - tamaño, y + tamaño / 2);
+        } else {
+            flecha.addPoint(x, y);
+            flecha.addPoint(x - tamaño / 2, y + tamaño);
+            flecha.addPoint(x + tamaño / 2, y + tamaño);
         }
+        g2.fillPolygon(flecha);
     }
 
     private double calcularPaso(double rango) {
@@ -270,10 +342,12 @@ public class PanelGrafica extends JPanel {
 
     private void dibujarContorno(Graphics2D g2, int width, int height) {
         Shape contorno = new RoundRectangle2D.Double(8, 8, width - 16, height - 16, 18, 18);
-        g2.setColor(new Color(248, 250, 253));
+        GradientPaint fondo = new GradientPaint(0, 0, new Color(253, 254, 255), 0, height,
+                new Color(243, 246, 251));
+        g2.setPaint(fondo);
         g2.fill(contorno);
         g2.setStroke(new BasicStroke(2f));
-        g2.setColor(new Color(200, 208, 218));
+        g2.setColor(COLOR_CONTORNO);
         g2.draw(contorno);
     }
 
