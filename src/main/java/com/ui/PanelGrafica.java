@@ -20,11 +20,14 @@ public class PanelGrafica extends JPanel {
     private static final Color COLOR_GRILLA_SUAVE = new Color(235, 238, 244);
     private static final Color COLOR_EJES = new Color(40, 40, 40);
     private static final Color COLOR_CURVA = new Color(33, 150, 243);
-    private static final Color COLOR_AREA = new Color(120, 200, 120, 130);
-    private static final Stroke TRAZO_CURVA = new BasicStroke(2.2f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+    private static final Color COLOR_AREA = new Color(120, 200, 120, 120);
+    private static final Color COLOR_AREA_BORDE = new Color(76, 175, 80, 180);
+    private static final Color COLOR_LIMITE = new Color(72, 104, 173, 190);
+    private static final Stroke TRAZO_CURVA = new BasicStroke(2.35f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
     private static final Stroke TRAZO_EJES = new BasicStroke(2.4f);
     private static final Stroke TRAZO_GRILLA = new BasicStroke(1f);
     private static final Stroke TRAZO_GRILLA_SUAVE = new BasicStroke(0.6f);
+    private static final double LIMITE_VALOR_Y = 1e4;
     private final DecimalFormat formato = new DecimalFormat("0.##");
 
     private Integral integral;
@@ -139,7 +142,7 @@ public class PanelGrafica extends JPanel {
         for (int i = 0; i < muestras; i++) {
             double x = vistaMinX + i * (vistaMaxX - vistaMinX) / (muestras - 1);
             double y = integral.evaluarIntegrando(x);
-            if (Double.isFinite(y)) {
+            if (Double.isFinite(y) && Math.abs(y) <= LIMITE_VALOR_Y) {
                 xs.add(x);
                 ys.add(y);
             } else {
@@ -160,8 +163,9 @@ public class PanelGrafica extends JPanel {
         dibujarContorno(g2, width, height);
         dibujarGrilla(g2, width, height, mapX, mapY);
 
+        dibujarLimitesIntegracion(g2, mapX, height);
         double baseY = mapY.apply(0);
-        dibujarBarrasIntegrales(g2, mapX, mapY, baseY);
+        dibujarAreaIntegral(g2, mapX, mapY, baseY);
         dibujarCurva(g2, xs, ys, mapX, mapY);
 
         g2.dispose();
@@ -194,10 +198,10 @@ public class PanelGrafica extends JPanel {
         g2.draw(path);
     }
 
-    private void dibujarBarrasIntegrales(Graphics2D g2,
-                                         java.util.function.DoubleFunction<Double> mapX,
-                                         java.util.function.DoubleFunction<Double> mapY,
-                                         double baseY) {
+    private void dibujarAreaIntegral(Graphics2D g2,
+                                     java.util.function.DoubleFunction<Double> mapX,
+                                     java.util.function.DoubleFunction<Double> mapY,
+                                     double baseY) {
         double inicio = Math.min(limiteInferior, limiteSuperior);
         double fin = Math.max(limiteInferior, limiteSuperior);
 
@@ -205,36 +209,90 @@ public class PanelGrafica extends JPanel {
             return;
         }
 
-        int barras = 70;
-        double anchoPaso = (fin - inicio) / barras;
-        GradientPaint relleno = new GradientPaint(0, 0, COLOR_AREA, 0, (float) getHeight(), new Color(120, 200, 120, 40));
+        int pasos = 260;
+        double paso = (fin - inicio) / pasos;
+
+        GradientPaint relleno = new GradientPaint(0, 0, COLOR_AREA, 0, (float) getHeight(), new Color(120, 200, 120, 30));
         g2.setPaint(relleno);
+        g2.setStroke(new BasicStroke(1.2f));
 
-        for (int i = 0; i < barras; i++) {
-            double xCentro = inicio + (i + 0.5) * anchoPaso;
-            if (xCentro < vistaMinX || xCentro > vistaMaxX) {
+        Path2D area = new Path2D.Double();
+        boolean enTrazo = false;
+        double ultimoX = 0;
+
+        for (int i = 0; i <= pasos; i++) {
+            double x = inicio + i * paso;
+            double valor = integral.evaluarIntegrando(x);
+
+            if (!Double.isFinite(valor) || Math.abs(valor) > LIMITE_VALOR_Y) {
+                if (enTrazo) {
+                    area.lineTo(mapX.apply(ultimoX), baseY);
+                    g2.fill(area);
+                    g2.setColor(COLOR_AREA_BORDE);
+                    g2.draw(area);
+                    g2.setPaint(relleno);
+                    enTrazo = false;
+                    area.reset();
+                }
                 continue;
             }
 
-            double valor = integral.evaluarIntegrando(xCentro);
-            if (!Double.isFinite(valor)) {
-                continue;
+            double px = mapX.apply(x);
+            double py = mapY.apply(valor);
+
+            if (!enTrazo) {
+                area.moveTo(px, baseY);
+                enTrazo = true;
             }
 
-            double altura = mapY.apply(valor);
-            double base = baseY;
-            double x1 = mapX.apply(xCentro - anchoPaso / 2.0);
-            double x2 = mapX.apply(xCentro + anchoPaso / 2.0);
-
-            double y1 = Math.min(base, altura);
-            double y2 = Math.max(base, altura);
-
-            Shape barra = new RoundRectangle2D.Double(
-                    Math.round(x1), Math.round(y1),
-                    Math.max(1, Math.round(x2 - x1)), Math.max(1, Math.round(y2 - y1)),
-                    4, 4);
-            g2.fill(barra);
+            area.lineTo(px, py);
+            ultimoX = x;
         }
+
+        if (enTrazo) {
+            area.lineTo(mapX.apply(fin), baseY);
+            area.closePath();
+            g2.fill(area);
+            g2.setColor(COLOR_AREA_BORDE);
+            g2.draw(area);
+        }
+    }
+
+    private void dibujarLimitesIntegracion(Graphics2D g2,
+                                           java.util.function.DoubleFunction<Double> mapX,
+                                           int height) {
+        double inicio = Math.min(limiteInferior, limiteSuperior);
+        double fin = Math.max(limiteInferior, limiteSuperior);
+
+        Stroke previo = g2.getStroke();
+        g2.setStroke(new BasicStroke(1.4f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 0f, new float[]{6f, 6f}, 0f));
+        g2.setColor(COLOR_LIMITE);
+
+        double[] limites = {inicio, fin};
+        for (double limite : limites) {
+            double px = mapX.apply(limite);
+            g2.drawLine((int) Math.round(px), margen, (int) Math.round(px), height - margen);
+            dibujarEtiquetaLimite(g2, formato.format(limite), px, margen + 6);
+        }
+
+        g2.setStroke(previo);
+    }
+
+    private void dibujarEtiquetaLimite(Graphics2D g2, String texto, double x, int y) {
+        Font original = g2.getFont();
+        g2.setFont(original.deriveFont(Font.BOLD, 11f));
+        FontMetrics fm = g2.getFontMetrics();
+        int ancho = fm.stringWidth(texto) + 8;
+        int alto = fm.getHeight();
+        int dibujarX = (int) Math.round(x - ancho / 2.0);
+        int dibujarY = y;
+
+        g2.setColor(new Color(255, 255, 255, 230));
+        g2.fillRoundRect(dibujarX, dibujarY - alto + 2, ancho, alto, 10, 10);
+        g2.setColor(COLOR_LIMITE);
+        g2.drawRoundRect(dibujarX, dibujarY - alto + 2, ancho, alto, 10, 10);
+        g2.drawString(texto, dibujarX + 4, dibujarY);
+        g2.setFont(original);
     }
 
     private void dibujarGrilla(Graphics2D g2, int width, int height,
@@ -389,7 +447,7 @@ public class PanelGrafica extends JPanel {
         for (int i = 0; i < muestras; i++) {
             double x = minX + i * (maxX - minX) / (muestras - 1);
             double y = integral.evaluarIntegrando(x);
-            if (Double.isFinite(y)) {
+            if (Double.isFinite(y) && Math.abs(y) <= LIMITE_VALOR_Y) {
                 minY = Math.min(minY, y);
                 maxY = Math.max(maxY, y);
             }
