@@ -3,14 +3,25 @@ package com.model;
 import java.util.List;
 import java.util.Random;
 
+import com.model.Dificultad;
+
 public class IntegralRaiz implements IntegralEstrategia {
     private static final Random RAND = new Random();
     private int a, b;
 
     @Override
-    public void generarParametros() {
-        a = RAND.nextInt(5) + 1;
-        b = RAND.nextInt(5) + 1;
+    public void generarParametros(Dificultad dificultad) {
+        switch (dificultad) {
+            case FACIL -> asignarParametros(1, 2, 5, 7);
+            case DIFICIL -> asignarParametros(3, 6, 8, 15);
+            default -> asignarParametros(2, 4, 6, 10);
+        }
+    }
+
+    private void asignarParametros(int minA, int maxA, int minFactorB, int maxFactorB) {
+        a = RAND.nextInt(maxA - minA + 1) + minA;
+        int factor = RAND.nextInt(maxFactorB - minFactorB + 1) + minFactorB;
+        b = factor * a; // Garantiza dominio no negativo en [-5, 5]
     }
 
     @Override

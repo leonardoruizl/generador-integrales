@@ -2,9 +2,11 @@ package com.model;
 
 import java.util.List;
 
+import com.model.Dificultad;
+
 public interface IntegralEstrategia {
     /** Genera parámetros aleatorios internos */
-    void generarParametros();
+    void generarParametros(Dificultad dificultad);
 
     /** Calcula el resultado definido */
     double calcularResultado(double limiteInferior, double limiteSuperior);

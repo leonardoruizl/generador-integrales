@@ -3,19 +3,28 @@ package com.ui;
 import javax.swing.*;
 import java.awt.*;
 
+import com.model.Dificultad;
+
 public class ConfigIntegralDialog extends JDialog {
     private JRadioButton rbRaiz, rbFraccion, rbTrig, rbAleatoria;
+    private JRadioButton rbFacil, rbMedio, rbDificil;
     private JCheckBox cbMostrarPasos, cbAleatorio;
     private JTextField txtLimiteInferior, txtLimiteSuperior;
     private boolean confirmado = false;
 
-    public ConfigIntegralDialog(Frame owner, double limInf, double limSup, boolean mostrar, boolean aleatorio, String tipo) {
+    public ConfigIntegralDialog(Frame owner, double limInf, double limSup, boolean mostrar, boolean aleatorio, String tipo, Dificultad dificultad) {
         super(owner, "Configuración de Integral", true);
         initUi();
 
         txtLimiteInferior.setText(formatDouble(limInf));
         txtLimiteSuperior.setText(formatDouble(limSup));
         cbMostrarPasos.setSelected(mostrar);
+
+        switch (dificultad) {
+            case FACIL -> rbFacil.setSelected(true);
+            case DIFICIL -> rbDificil.setSelected(true);
+            default -> rbMedio.setSelected(true);
+        }
 
         switch (tipo) {
             case "raiz" -> rbRaiz.setSelected(true);
@@ -63,6 +72,25 @@ public class ConfigIntegralDialog extends JDialog {
         JPanel pasosPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         pasosPanel.setBorder(BorderFactory.createTitledBorder("Mostrar pasos"));
         pasosPanel.add(cbMostrarPasos);
+
+        // Panel de dificultad
+        JPanel dificultadPanel = new JPanel(new GridLayout(0, 1));
+        dificultadPanel.setBorder(BorderFactory.createTitledBorder("Dificultad"));
+
+        rbFacil = new JRadioButton("Fácil");
+        rbMedio = new JRadioButton("Media");
+        rbDificil = new JRadioButton("Difícil");
+
+        ButtonGroup grupoDificultad = new ButtonGroup();
+        grupoDificultad.add(rbFacil);
+        grupoDificultad.add(rbMedio);
+        grupoDificultad.add(rbDificil);
+
+        rbMedio.setSelected(true);
+
+        dificultadPanel.add(rbFacil);
+        dificultadPanel.add(rbMedio);
+        dificultadPanel.add(rbDificil);
 
         // Panel de límites
         JPanel limitesPanel = new JPanel(new GridBagLayout());
@@ -126,6 +154,7 @@ public class ConfigIntegralDialog extends JDialog {
         centroPanel.setLayout(new BoxLayout(centroPanel, BoxLayout.Y_AXIS));
 
         centroPanel.add(tipoPanel);
+        centroPanel.add(dificultadPanel);
         centroPanel.add(pasosPanel);
         centroPanel.add(limitesPanel);
 
@@ -155,6 +184,12 @@ public class ConfigIntegralDialog extends JDialog {
 
     public boolean getMostrarPasos() {
         return cbMostrarPasos.isSelected();
+    }
+
+    public Dificultad getDificultadSeleccionada() {
+        if (rbFacil.isSelected()) return Dificultad.FACIL;
+        if (rbDificil.isSelected()) return Dificultad.DIFICIL;
+        return Dificultad.MEDIA;
     }
 
     public Double getLimiteInferior() {

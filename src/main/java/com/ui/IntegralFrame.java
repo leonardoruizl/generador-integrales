@@ -1,5 +1,6 @@
 package com.ui;
 
+import com.model.Dificultad;
 import com.model.Integral;
 
 import javax.swing.*;
@@ -12,6 +13,7 @@ public class IntegralFrame extends JFrame {
     private double limiteSuperior = 1;
     private boolean mostrarPasos = false;
     private boolean limitesAleatorios = true;
+    private Dificultad dificultad = Dificultad.MEDIA;
 
     private Integral integral; // El modelo de la integral
     private final PanelIntegral panelIntegral;
@@ -76,7 +78,7 @@ public class IntegralFrame extends JFrame {
             limiteSuperior = b;
         }
 
-        integral = new Integral(tipo, limiteInferior, limiteSuperior);
+        integral = new Integral(tipo, limiteInferior, limiteSuperior, dificultad);
 
         panelIntegral.mostrarIntegral(integral);
         panelOpciones.mostrarOpciones(integral.getOpciones());
@@ -102,7 +104,7 @@ public class IntegralFrame extends JFrame {
     }
 
     private void mostrarConfiguracionIntegral() {
-        ConfigIntegralDialog configDialog = new ConfigIntegralDialog(this, limiteInferior, limiteSuperior, mostrarPasos, limitesAleatorios, tipo);
+        ConfigIntegralDialog configDialog = new ConfigIntegralDialog(this, limiteInferior, limiteSuperior, mostrarPasos, limitesAleatorios, tipo, dificultad);
         configDialog.setVisible(true);
 
         if (!configDialog.getConfirmado()) {
@@ -112,6 +114,7 @@ public class IntegralFrame extends JFrame {
         tipo = configDialog.getTipoIntegral();
         mostrarPasos = configDialog.getMostrarPasos();
         limitesAleatorios = configDialog.getLimitesAleatorios();
+        dificultad = configDialog.getDificultadSeleccionada();
 
         if (!limitesAleatorios) {
             Double tmpInferior = configDialog.getLimiteInferior();
