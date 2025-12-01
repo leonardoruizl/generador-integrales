@@ -7,8 +7,9 @@ import java.awt.event.ActionListener;
 public class PanelControl extends JPanel {
     private final JButton verificarBoton;
     private final JLabel resultadoLabel;
+    private final JButton verPasosBoton;
 
-    public PanelControl(ActionListener verificarListener) {
+    public PanelControl(ActionListener verificarListener, ActionListener verPasosListener) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 20, 10));
 
@@ -17,6 +18,11 @@ public class PanelControl extends JPanel {
         verificarBoton.setAlignmentX(Component.CENTER_ALIGNMENT);
         verificarBoton.addActionListener(verificarListener);
 
+        verPasosBoton = new JButton("Ver pasos");
+        verPasosBoton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        verPasosBoton.addActionListener(verPasosListener);
+        verPasosBoton.setEnabled(false);
+
         resultadoLabel = new JLabel();
         resultadoLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
         resultadoLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -24,6 +30,8 @@ public class PanelControl extends JPanel {
         resultadoLabel.setVisible(false);
 
         add(verificarBoton);
+        add(Box.createRigidArea(new Dimension(0, 5)));
+        add(verPasosBoton);
         add(Box.createRigidArea(new Dimension(0, 10))); // Espacio opcional entre botón y mensaje
         add(resultadoLabel);
     }
@@ -38,5 +46,10 @@ public class PanelControl extends JPanel {
         resultadoLabel.setVisible(false);
         resultadoLabel.setText("");
         verificarBoton.setEnabled(true);
+        verPasosBoton.setEnabled(false);
+    }
+
+    public void habilitarVerPasos(boolean habilitado) {
+        verPasosBoton.setEnabled(habilitado);
     }
 }
