@@ -55,6 +55,15 @@ public class IntegralRaiz implements IntegralEstrategia {
     }
 
     @Override
+    public double evaluarIntegrando(double x) {
+        double inside = a * x + b;
+        if (inside < 0) {
+            return Double.NaN;
+        }
+        return Math.sqrt(inside);
+    }
+
+    @Override
     public List<String> getPasos() {
         return List.of(
                 String.format("Sea \\(u = %dx + %d\\) ⇒ \\(du = %d\\,dx\\).", a, b, a),

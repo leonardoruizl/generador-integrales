@@ -8,8 +8,9 @@ public class PanelControl extends JPanel {
     private final JButton verificarBoton;
     private final JLabel resultadoLabel;
     private final JButton verPasosBoton;
+    private final JButton verGraficaBoton;
 
-    public PanelControl(ActionListener verificarListener, ActionListener verPasosListener) {
+    public PanelControl(ActionListener verificarListener, ActionListener verPasosListener, ActionListener verGraficaListener) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 20, 10));
 
@@ -23,6 +24,10 @@ public class PanelControl extends JPanel {
         verPasosBoton.addActionListener(verPasosListener);
         verPasosBoton.setEnabled(false);
 
+        verGraficaBoton = new JButton("Ver gráfica");
+        verGraficaBoton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        verGraficaBoton.addActionListener(verGraficaListener);
+
         resultadoLabel = new JLabel();
         resultadoLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
         resultadoLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -32,6 +37,8 @@ public class PanelControl extends JPanel {
         add(verificarBoton);
         add(Box.createRigidArea(new Dimension(0, 5)));
         add(verPasosBoton);
+        add(Box.createRigidArea(new Dimension(0, 5)));
+        add(verGraficaBoton);
         add(Box.createRigidArea(new Dimension(0, 10))); // Espacio opcional entre botón y mensaje
         add(resultadoLabel);
     }
@@ -47,9 +54,14 @@ public class PanelControl extends JPanel {
         resultadoLabel.setText("");
         verificarBoton.setEnabled(true);
         verPasosBoton.setEnabled(false);
+        verGraficaBoton.setText("Ver gráfica");
     }
 
     public void habilitarVerPasos(boolean habilitado) {
         verPasosBoton.setEnabled(habilitado);
+    }
+
+    public void actualizarEstadoGrafica(boolean visible) {
+        verGraficaBoton.setText(visible ? "Ocultar gráfica" : "Ver gráfica");
     }
 }

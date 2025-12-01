@@ -49,6 +49,15 @@ public class IntegralFraccion implements IntegralEstrategia {
     }
 
     @Override
+    public double evaluarIntegrando(double x) {
+        double denominador = c * x + d;
+        if (denominador == 0) {
+            return Double.NaN;
+        }
+        return (a * x + b) / denominador;
+    }
+
+    @Override
     public List<String> getPasos() {
         return List.of(
                 "Reescribimos:",

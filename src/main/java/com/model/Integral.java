@@ -145,4 +145,16 @@ public class Integral {
     public List<String> getPasos() {
         return estrategia.getPasos();
     }
+
+    public double evaluarIntegrando(double x) {
+        return estrategia.evaluarIntegrando(x);
+    }
+
+    public double getLimiteInferior() {
+        return limiteInferior;
+    }
+
+    public double getLimiteSuperior() {
+        return limiteSuperior;
+    }
 }

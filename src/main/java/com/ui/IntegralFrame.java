@@ -17,9 +17,11 @@ public class IntegralFrame extends JFrame {
     private boolean mostrarPasos = false;
     private boolean limitesAleatorios = true;
     private Dificultad dificultad = Dificultad.MEDIA;
+    private boolean graficaVisible = false;
 
     private Integral integral; // El modelo de la integral
     private final PanelIntegral panelIntegral;
+    private final PanelGrafica panelGrafica;
     private JPopupMenu popupMenu;
     private final PanelAppBar panelAppBar;
     private final PanelOpciones panelOpciones;
@@ -30,7 +32,7 @@ public class IntegralFrame extends JFrame {
     public IntegralFrame() {
         setTitle("Generador de Integrales");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(700, 510);
+        setSize(720, 620);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(10, 10));
 
@@ -41,8 +43,9 @@ public class IntegralFrame extends JFrame {
         );
 
         panelIntegral = new PanelIntegral();
+        panelGrafica = new PanelGrafica();
         panelOpciones = new PanelOpciones();
-        panelControl = new PanelControl(e -> verificarRespuesta(), e -> mostrarPasos());
+        panelControl = new PanelControl(e -> verificarRespuesta(), e -> mostrarPasos(), e -> alternarGrafica());
         numberFormat = NumberFormat.getNumberInstance(new Locale("es", "ES"));
         numberFormat.setMaximumFractionDigits(5);
         numberFormat.setMinimumFractionDigits(0);
@@ -57,6 +60,8 @@ public class IntegralFrame extends JFrame {
         scrollOpciones.setBorder(BorderFactory.createEmptyBorder());
 
         panelPrincipal.add(panelIntegral);
+        panelPrincipal.add(Box.createRigidArea(new Dimension(0, 10)));
+        panelPrincipal.add(panelGrafica);
         panelPrincipal.add(Box.createRigidArea(new Dimension(0, 10)));
         panelPrincipal.add(scrollOpciones);
 
@@ -90,6 +95,10 @@ public class IntegralFrame extends JFrame {
             integral = new Integral(tipo, limiteInferior, limiteSuperior, dificultad);
 
             panelIntegral.mostrarIntegral(integral);
+            panelGrafica.actualizarIntegral(integral, limiteInferior, limiteSuperior);
+            graficaVisible = false;
+            panelGrafica.setVisible(false);
+            panelControl.actualizarEstadoGrafica(false);
             panelOpciones.mostrarOpciones(integral.getOpciones());
             panelControl.reset();
             pasosActuales = null;
@@ -179,5 +188,16 @@ public class IntegralFrame extends JFrame {
         }
 
         new PasosFrame(pasosActuales);
+    }
+
+    private void alternarGrafica() {
+        if (integral == null) {
+            return;
+        }
+        graficaVisible = !graficaVisible;
+        panelGrafica.setVisible(graficaVisible);
+        panelControl.actualizarEstadoGrafica(graficaVisible);
+        revalidate();
+        repaint();
     }
 }
