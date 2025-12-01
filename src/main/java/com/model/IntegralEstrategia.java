@@ -14,6 +14,9 @@ public interface IntegralEstrategia {
     /** Genera representación LaTeX */
     String getIntegrandoLatex();
 
+    /** Evalúa el integrando en el punto dado */
+    double evaluarIntegrando(double x);
+
     /** Pasos de resolución (si aplica) */
     List<String> getPasos();
 }
