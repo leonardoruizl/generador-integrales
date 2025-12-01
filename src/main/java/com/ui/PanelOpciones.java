@@ -2,6 +2,8 @@ package com.ui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -17,6 +19,7 @@ public class PanelOpciones extends JPanel {
         numberFormat = NumberFormat.getNumberInstance(new Locale("es", "ES"));
         numberFormat.setMaximumFractionDigits(5);
         numberFormat.setMinimumFractionDigits(0);
+        numberFormat.setRoundingMode(RoundingMode.HALF_UP);
     }
 
     // Limpia y genera nuevos botones de opción
@@ -25,7 +28,7 @@ public class PanelOpciones extends JPanel {
         grupoOpciones = new ButtonGroup(); // Reiniciar el grupo de botones
 
         for (int i = 0; i < 5; i++) {
-            String textoOpcion = numberFormat.format(opciones[i]);
+            String textoOpcion = numberFormat.format(redondearCincoDecimales(opciones[i]));
             botones[i] = new JRadioButton(textoOpcion);
             botones[i].setFont(new Font("Segoe UI", Font.PLAIN, 14));
             grupoOpciones.add(botones[i]);
@@ -67,5 +70,9 @@ public class PanelOpciones extends JPanel {
 
             boton.setEnabled(false);
         }
+    }
+
+    private double redondearCincoDecimales(double valor) {
+        return BigDecimal.valueOf(valor).setScale(5, RoundingMode.HALF_UP).doubleValue();
     }
 }

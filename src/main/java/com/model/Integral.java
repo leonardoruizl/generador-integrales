@@ -1,9 +1,13 @@
 package com.model;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
+import java.util.Set;
 
 import com.model.Dificultad;
 
@@ -82,14 +86,21 @@ public class Integral {
         // Resultado pequeño → evita ruido numérico
         double base = Math.abs(resultado) < 1e-5 ? 0.0 : resultado;
 
-        // Generar opciones cercanas
-        for (int i = 0; i < opciones.length; i++) {
-            opciones[i] = base + variacion(base, r);
-        }
+        Set<BigDecimal> valoresUnicos = new HashSet<>();
+        valoresUnicos.add(redondearCincoDecimales(base));
 
         // Asignar la opción correcta
         opciones[opcionCorrecta] = base;
         resultado = base;
+
+        // Generar opciones cercanas
+        for (int i = 0; i < opciones.length; i++) {
+            if (i == opcionCorrecta) {
+                continue;
+            }
+
+            opciones[i] = generarOpcionUnica(base, r, valoresUnicos);
+        }
     }
 
     private double variacion(double base, Random r) {
@@ -99,6 +110,20 @@ public class Integral {
         // Variación hasta ±30% aprox
         double factor = 0.3 * (r.nextDouble() - 0.5);
         return base * factor;
+    }
+
+    private double generarOpcionUnica(double base, Random random, Set<BigDecimal> valoresUnicos) {
+        while (true) {
+            double candidato = base + variacion(base, random);
+            BigDecimal clave = redondearCincoDecimales(candidato);
+            if (valoresUnicos.add(clave)) {
+                return candidato;
+            }
+        }
+    }
+
+    private BigDecimal redondearCincoDecimales(double valor) {
+        return BigDecimal.valueOf(valor).setScale(5, RoundingMode.HALF_UP);
     }
 
     public double[] getOpciones() {
