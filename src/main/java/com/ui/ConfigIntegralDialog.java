@@ -6,7 +6,7 @@ import java.awt.*;
 import com.model.Dificultad;
 
 public class ConfigIntegralDialog extends JDialog {
-    private JRadioButton rbRaiz, rbFraccion, rbTrig, rbAleatoria;
+    private JRadioButton rbRaiz, rbFraccion, rbTrig, rbClasica, rbAleatoria;
     private JRadioButton rbFacil, rbMedio, rbDificil;
     private JCheckBox cbMostrarPasos, cbAleatorio;
     private JTextField txtLimiteInferior, txtLimiteSuperior;
@@ -30,6 +30,7 @@ public class ConfigIntegralDialog extends JDialog {
             case "raiz" -> rbRaiz.setSelected(true);
             case "fraccion" -> rbFraccion.setSelected(true);
             case "trig" -> rbTrig.setSelected(true);
+            case "clasica" -> rbClasica.setSelected(true);
             default -> rbAleatoria.setSelected(true);
         }
 
@@ -51,12 +52,14 @@ public class ConfigIntegralDialog extends JDialog {
         rbRaiz = new JRadioButton("Raíz");
         rbFraccion = new JRadioButton("Fracción");
         rbTrig = new JRadioButton("Trigonométrica");
+        rbClasica = new JRadioButton("Clásicas");
         rbAleatoria = new JRadioButton("Aleatoria");
 
         ButtonGroup grupo = new ButtonGroup();
         grupo.add(rbRaiz);
         grupo.add(rbFraccion);
         grupo.add(rbTrig);
+        grupo.add(rbClasica);
         grupo.add(rbAleatoria);
 
         rbAleatoria.setSelected(true);
@@ -64,6 +67,7 @@ public class ConfigIntegralDialog extends JDialog {
         tipoPanel.add(rbRaiz);
         tipoPanel.add(rbFraccion);
         tipoPanel.add(rbTrig);
+        tipoPanel.add(rbClasica);
         tipoPanel.add(rbAleatoria);
 
         // Panel de mostrar pasos
@@ -181,6 +185,7 @@ public class ConfigIntegralDialog extends JDialog {
         if (rbRaiz.isSelected()) return "raiz";
         if (rbFraccion.isSelected()) return "fraccion";
         if (rbTrig.isSelected()) return "trig";
+        if (rbClasica.isSelected()) return "clasica";
         return "aleatoria";
     }
 
