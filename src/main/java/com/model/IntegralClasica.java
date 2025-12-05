@@ -288,8 +288,9 @@ public class IntegralClasica implements IntegralEstrategia {
                 String.format("La integral queda c\\int u^{-%d} du = \\tfrac{c}{1-%d} u^{1-%d}.", potencia, potencia, potencia)
         );
 
-        String latex = String.format("\\frac{%s(2\, %dx %+d)}{(%dx^{2}%+dx%+d)^{%d}}",
-                factor == 1.0 ? "" : String.format("%.0f", factor), a, b, a, b, c, potencia);
+        String factorLatex = factor == 1.0 ? "" : String.format("%.0f\\,", factor);
+        String latex = String.format("\\frac{%s(2 %dx %+d)}{(%dx^{2} %+d x %+d)^{%d}}",
+                factorLatex, a, b, a, b, c, potencia);
 
         return new Template(integrando, primitiva, latex, pasos, (aLim, bLim) -> {
             double denomInf = a * aLim * aLim + b * aLim + c;
