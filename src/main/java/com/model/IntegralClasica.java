@@ -198,7 +198,7 @@ public class IntegralClasica implements IntegralEstrategia {
         DoubleUnaryOperator integrando = x -> 1.0 / Math.sqrt(a + b * x * x);
         DoubleUnaryOperator primitiva = x -> {
             double factor = Math.sqrt((double) b / a);
-            return Math.asinh(x * factor) / Math.sqrt(b);
+            return asinh(x * factor) / Math.sqrt(b);
         };
 
         List<String> pasos = List.of(
@@ -235,6 +235,13 @@ public class IntegralClasica implements IntegralEstrategia {
         private void validarDominio(double a, double b) {
             dominioChecker.validar(a, b);
         }
+    }
+
+    /**
+     * Implementación independiente de {@code asinh} para entornos donde no esté disponible en {@link Math}.
+     */
+    private static double asinh(double x) {
+        return Math.log(x + Math.sqrt(x * x + 1.0));
     }
 
     @FunctionalInterface
