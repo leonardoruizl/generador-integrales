@@ -41,9 +41,10 @@ public class Integral {
             case "raiz" -> new IntegralRaiz();
             case "fraccion" -> new IntegralFraccion();
             case "trig" -> new IntegralTrig();
+            case "clasica" -> new IntegralClasica();
 
             case "aleatoria" -> {
-                String[] pool = {"raiz", "fraccion", "trig"};
+                String[] pool = {"raiz", "fraccion", "trig", "clasica"};
                 yield crearEstrategia(pool[new Random().nextInt(pool.length)]);
             }
 
