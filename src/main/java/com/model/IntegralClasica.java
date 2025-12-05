@@ -145,7 +145,7 @@ public class IntegralClasica implements IntegralEstrategia {
 
         List<String> pasos = List.of(
                 "Aplicar integración por partes dos veces con u = x^2 y dv = e^{ax} dx.",
-                "El resultado general es e^{ax} \left(\tfrac{x^2}{a} - \tfrac{2x}{a^2} + \tfrac{2}{a^3}\right)."
+                "El resultado general es e^{ax} \\left(\\tfrac{x^2}{a} - \\tfrac{2x}{a^2} + \\tfrac{2}{a^3}\\right)."
         );
 
         String latex = String.format("x^{2} e^{%dx}", a);
@@ -168,9 +168,9 @@ public class IntegralClasica implements IntegralEstrategia {
         DoubleUnaryOperator primitiva = x -> (x * x * Math.sin(k * x)) / k + (2 * x * Math.cos(k * x)) / (k * k) - (2 * Math.sin(k * x)) / Math.pow(k, 3);
 
         List<String> pasos = List.of(
-                "Integrar por partes con u = x^2 y dv = \cos(kx)dx.",
-                "La segunda integración por partes sobre \int x \sin(kx) dx da el término final.",
-                "Combinando: \tfrac{x^2\sin(kx)}{k} + \tfrac{2x\cos(kx)}{k^2} - \tfrac{2\sin(kx)}{k^3}."
+                "Integrar por partes con u = x^2 y dv = \\cos(kx)dx.",
+                "La segunda integración por partes sobre \\int x \\sin(kx) dx da el término final.",
+                "Combinando: \\tfrac{x^2\\sin(kx)}{k} + \\tfrac{2x\\cos(kx)}{k^2} - \\tfrac{2\\sin(kx)}{k^3}."
         );
 
         String latex = String.format("x^{2} \\cos(%dx)", k);
@@ -202,9 +202,9 @@ public class IntegralClasica implements IntegralEstrategia {
         };
 
         List<String> pasos = List.of(
-                "Completa cuadrado: a + bx^2 = a\left(1 + \tfrac{b}{a}x^2\right).",
-                "Sustituye x = \sqrt{a/b}\,\sinh(u) para obtener una integral elemental.",
-                "La primitiva es \tfrac{1}{\sqrt{b}}\,\operatorname{arcsinh}\left(x\sqrt{\tfrac{b}{a}}\right)."
+                "Completa cuadrado: a + bx^2 = a\\left(1 + \\tfrac{b}{a}x^2\\right).",
+                "Sustituye x = \\sqrt{a/b}\\,\\sinh(u) para obtener una integral elemental.",
+                "La primitiva es \\tfrac{1}{\\sqrt{b}}\\,\\operatorname{arcsinh}\\left(x\\sqrt{\\tfrac{b}{a}}\\right)."
         );
 
         String latex = String.format("\\frac{1}{\\sqrt{%d + %dx^{2}}}", a, b);
