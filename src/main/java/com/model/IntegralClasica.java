@@ -84,9 +84,9 @@ public class IntegralClasica implements IntegralEstrategia {
         };
 
         List<String> pasos = List.of(
-                "Usa la sustitución trigonométrica clásica: x = R\\sin(\\theta).",
+                "Sustitución trigonométrica para raíces cuadráticas: x = R\\sin(\\theta).",
                 "Entonces dx = R\\cos(\\theta)\\, d\\theta y R^2 - x^2 = R^2\\cos^2(\\theta).",
-                "La integral queda en términos de cosenos y senos, dando \\frac{1}{2}\\left(x\\sqrt{R^2 - x^2} + R^2 \\arcsin(\\tfrac{x}{R})\\right)."
+                "Integrando en \\theta se obtiene por tablas el resultado \\frac{1}{2}\\left(x\\sqrt{R^2 - x^2} + R^2 \\arcsin(\\tfrac{x}{R})\\right)."
         );
 
         String latex = String.format("\\sqrt{%d - x^{2}}", radio * radio);
@@ -116,8 +116,9 @@ public class IntegralClasica implements IntegralEstrategia {
         DoubleUnaryOperator primitiva = x -> (a / 2.0) * Math.log(x * x + c) + (b / Math.sqrt(c)) * Math.atan(x / Math.sqrt(c));
 
         List<String> pasos = List.of(
-                "Separar en dos términos: \\frac{a x}{x^2 + c} + \\frac{b}{x^2 + c}.",
-                "El primer término se resuelve con sustitución u = x^2 + c; el segundo con la forma estándar \\arctan(x/\\sqrt{c})."
+                "Fracciones parciales: separar \\frac{ax + b}{x^2 + c} en un término lineal y otro racional.",
+                "Cambio de variable d/du en el término \\frac{a x}{x^2 + c} con u = x^2 + c.",
+                "El segundo término coincide con la entrada de tablas \\int \\frac{1}{x^2 + c} dx = \\frac{1}{\\sqrt{c}} \\arctan(x/\\sqrt{c})."
         );
 
         String latex = String.format("\\frac{%dx + %d}{x^{2} + %d}", a, b, c);
@@ -144,8 +145,9 @@ public class IntegralClasica implements IntegralEstrategia {
         DoubleUnaryOperator primitiva = x -> Math.exp(a * x) * (x * x / a - 2 * x / (a * a) + 2 / Math.pow(a, 3));
 
         List<String> pasos = List.of(
-                "Aplicar integración por partes dos veces con u = x^2 y dv = e^{ax} dx.",
-                "El resultado general es e^{ax} \\left(\\tfrac{x^2}{a} - \\tfrac{2x}{a^2} + \\tfrac{2}{a^3}\\right)."
+                "Integración por partes (método del cacahuate): u = x^2, dv = e^{ax} dx.",
+                "Repetir el método para la integral restante \\int x e^{ax} dx.",
+                "Combinando ambos pasos se llega a e^{ax} \\left(\\tfrac{x^2}{a} - \\tfrac{2x}{a^2} + \\tfrac{2}{a^3}\\right)."
         );
 
         String latex = String.format("x^{2} e^{%dx}", a);
@@ -168,9 +170,9 @@ public class IntegralClasica implements IntegralEstrategia {
         DoubleUnaryOperator primitiva = x -> (x * x * Math.sin(k * x)) / k + (2 * x * Math.cos(k * x)) / (k * k) - (2 * Math.sin(k * x)) / Math.pow(k, 3);
 
         List<String> pasos = List.of(
-                "Integrar por partes con u = x^2 y dv = \\cos(kx)dx.",
-                "La segunda integración por partes sobre \\int x \\sin(kx) dx da el término final.",
-                "Combinando: \\tfrac{x^2\\sin(kx)}{k} + \\tfrac{2x\\cos(kx)}{k^2} - \\tfrac{2\\sin(kx)}{k^3}."
+                "Integración parcial / método por partes con u = x^2 y dv = \\cos(kx)dx.",
+                "Aplicar nuevamente el método del cacahuate en \\int x \\sin(kx) dx.",
+                "El resultado combinado es \\tfrac{x^2\\sin(kx)}{k} + \\tfrac{2x\\cos(kx)}{k^2} - \\tfrac{2\\sin(kx)}{k^3}."
         );
 
         String latex = String.format("x^{2} \\cos(%dx)", k);
@@ -202,9 +204,9 @@ public class IntegralClasica implements IntegralEstrategia {
         };
 
         List<String> pasos = List.of(
-                "Completa cuadrado: a + bx^2 = a\\left(1 + \\tfrac{b}{a}x^2\\right).",
-                "Sustituye x = \\sqrt{a/b}\\,\\sinh(u) para obtener una integral elemental.",
-                "La primitiva es \\tfrac{1}{\\sqrt{b}}\\,\\operatorname{arcsinh}\\left(x\\sqrt{\\tfrac{b}{a}}\\right)."
+                "Sustitución trigonométrica (forma hiperbólica) para integrales tipo \\frac{1}{\\sqrt{a + bx^2}}.",
+                "Completa cuadrado: a + bx^2 = a\\left(1 + \\tfrac{b}{a}x^2\\right) y toma x = \\sqrt{a/b}\\,\\sinh(u).",
+                "Usa la entrada de tablas de \\int \\frac{1}{\\sqrt{1 + t^2}} dt para obtener \\tfrac{1}{\\sqrt{b}}\\,\\operatorname{arcsinh}\\left(x\\sqrt{\\tfrac{b}{a}}\\right)."
         );
 
         String latex = String.format("\\frac{1}{\\sqrt{%d + %dx^{2}}}", a, b);
