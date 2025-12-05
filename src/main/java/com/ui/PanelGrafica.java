@@ -10,8 +10,10 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Path2D;
 import java.awt.geom.RoundRectangle2D;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class PanelGrafica extends JPanel {
     private static final Color COLOR_FONDO = new Color(248, 249, 252);
@@ -28,7 +30,7 @@ public class PanelGrafica extends JPanel {
     private static final Stroke TRAZO_GRILLA = new BasicStroke(1f);
     private static final Stroke TRAZO_GRILLA_SUAVE = new BasicStroke(0.6f);
     private static final double LIMITE_VALOR_Y = 1e4;
-    private final DecimalFormat formato = new DecimalFormat("0.##");
+    private final DecimalFormat formato = new DecimalFormat("0.##", DecimalFormatSymbols.getInstance(Locale.US));
 
     private Integral integral;
     private double limiteInferior;

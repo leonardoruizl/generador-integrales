@@ -46,7 +46,7 @@ public class IntegralFrame extends JFrame {
         panelGrafica = new PanelGrafica();
         panelOpciones = new PanelOpciones();
         panelControl = new PanelControl(e -> verificarRespuesta(), e -> mostrarPasos(), e -> alternarGrafica());
-        numberFormat = NumberFormat.getNumberInstance(new Locale("es", "ES"));
+        numberFormat = NumberFormat.getNumberInstance(Locale.US);
         numberFormat.setMaximumFractionDigits(5);
         numberFormat.setMinimumFractionDigits(0);
 

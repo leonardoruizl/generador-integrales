@@ -16,7 +16,7 @@ public class PanelOpciones extends JPanel {
         setLayout(new GridLayout(0, 1, 5, 2));
         botones = new JRadioButton[5];
         grupoOpciones = new ButtonGroup();
-        numberFormat = NumberFormat.getNumberInstance(new Locale("es", "ES"));
+        numberFormat = NumberFormat.getNumberInstance(Locale.US);
         numberFormat.setMaximumFractionDigits(5);
         numberFormat.setMinimumFractionDigits(0);
         numberFormat.setRoundingMode(RoundingMode.HALF_UP);
