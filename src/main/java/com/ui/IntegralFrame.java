@@ -144,6 +144,8 @@ public class IntegralFrame extends JFrame {
             limiteInferior = configDialog.getLimiteInferior();
             limiteSuperior = configDialog.getLimiteSuperior();
         }
+
+        generarNuevaIntegral();
     }
 
     private void verificarRespuesta() {

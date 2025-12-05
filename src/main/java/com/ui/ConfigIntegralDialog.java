@@ -9,15 +9,15 @@ public class ConfigIntegralDialog extends JDialog {
     private JRadioButton rbRaiz, rbFraccion, rbTrig, rbClasica, rbAleatoria;
     private JRadioButton rbFacil, rbMedio, rbDificil;
     private JCheckBox cbMostrarPasos, cbAleatorio;
-    private JTextField txtLimiteInferior, txtLimiteSuperior;
+    private JSpinner spLimiteInferior, spLimiteSuperior;
     private boolean confirmado = false;
 
     public ConfigIntegralDialog(Frame owner, double limInf, double limSup, boolean mostrar, boolean aleatorio, String tipo, Dificultad dificultad) {
         super(owner, "Configuración de Integral", true);
         initUi();
 
-        txtLimiteInferior.setText(formatDouble(limInf));
-        txtLimiteSuperior.setText(formatDouble(limSup));
+        spLimiteInferior.setValue(limInf);
+        spLimiteSuperior.setValue(limSup);
         cbMostrarPasos.setSelected(mostrar);
 
         switch (dificultad) {
@@ -35,8 +35,8 @@ public class ConfigIntegralDialog extends JDialog {
         }
 
         cbAleatorio.setSelected(aleatorio);
-        txtLimiteInferior.setEnabled(!aleatorio);
-        txtLimiteSuperior.setEnabled(!aleatorio);
+        spLimiteInferior.setEnabled(!aleatorio);
+        spLimiteSuperior.setEnabled(!aleatorio);
 
         pack();
         setLocationRelativeTo(owner);
@@ -44,6 +44,7 @@ public class ConfigIntegralDialog extends JDialog {
 
     private void initUi() {
         setLayout(new BorderLayout(10, 10));
+        setResizable(false);
 
         // Tipo de integral
         JPanel tipoPanel = new JPanel(new GridLayout(0, 1));
@@ -110,17 +111,17 @@ public class ConfigIntegralDialog extends JDialog {
         c.anchor = GridBagConstraints.WEST;
         limitesPanel.add(new JLabel("Límite inferior:"), c);
 
-        txtLimiteInferior = new JTextField("0", 8);
+        spLimiteInferior = crearSpinner();
         c.gridx = 1;
-        limitesPanel.add(txtLimiteInferior, c);
+        limitesPanel.add(spLimiteInferior, c);
 
         c.gridx = 0;
         c.gridy = 1;
         limitesPanel.add(new JLabel("Límite superior:"), c);
 
-        txtLimiteSuperior = new JTextField("1", 8);
+        spLimiteSuperior = crearSpinner();
         c.gridx = 1;
-        limitesPanel.add(txtLimiteSuperior, c);
+        limitesPanel.add(spLimiteSuperior, c);
 
         cbAleatorio = new JCheckBox("Generar límites aleatorios");
         c.gridx = 0;
@@ -131,12 +132,17 @@ public class ConfigIntegralDialog extends JDialog {
 
         cbAleatorio.addActionListener(e -> {
             boolean aleatorio = cbAleatorio.isSelected();
-            txtLimiteInferior.setEnabled(!aleatorio);
-            txtLimiteSuperior.setEnabled(!aleatorio);
+            spLimiteInferior.setEnabled(!aleatorio);
+            spLimiteSuperior.setEnabled(!aleatorio);
         });
 
-        txtLimiteInferior.setEnabled(!cbAleatorio.isSelected());
-        txtLimiteSuperior.setEnabled(!cbAleatorio.isSelected());
+        spLimiteInferior.setEnabled(!cbAleatorio.isSelected());
+        spLimiteSuperior.setEnabled(!cbAleatorio.isSelected());
+
+        JLabel tipLimites = new JLabel("Usa las flechas o escribe valores decimales para ajustar los límites.");
+        tipLimites.setFont(tipLimites.getFont().deriveFont(Font.ITALIC, 11f));
+        c.gridy = 3;
+        limitesPanel.add(tipLimites, c);
 
         // Panel de botones
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -168,13 +174,12 @@ public class ConfigIntegralDialog extends JDialog {
         add(panelBotones, BorderLayout.SOUTH);
     }
 
-    // Formatear double para mostrar sin decimales si es entero
-    private String formatDouble(double x) {
-        if (x == (long) x) {
-            return String.format("%d", (long) x);  // sin decimal
-        } else {
-            return String.valueOf(x);             // con decimal
-        }
+    private JSpinner crearSpinner() {
+        SpinnerNumberModel model = new SpinnerNumberModel(0.0, -1000.0, 1000.0, 0.5);
+        JSpinner spinner = new JSpinner(model);
+        spinner.setEditor(new JSpinner.NumberEditor(spinner, "0.###"));
+        spinner.setPreferredSize(new Dimension(90, spinner.getPreferredSize().height));
+        return spinner;
     }
 
     public boolean getConfirmado() {
@@ -204,17 +209,24 @@ public class ConfigIntegralDialog extends JDialog {
             return true;
         }
 
-        Double limInf = getLimiteInferior();
-        Double limSup = getLimiteSuperior();
+        double limInf = getLimiteInferior();
+        double limSup = getLimiteSuperior();
 
-        if (limInf == null || limSup == null) {
+        if (limInf == 0 && limSup == 0) {
             JOptionPane.showMessageDialog(this,
-                    "Los límites deben ser números válidos.",
+                    "Los límites no pueden ser ambos 0.",
                     "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
-        if (limInf >= limSup) {
+        if (limInf == limSup) {
+            JOptionPane.showMessageDialog(this,
+                    "Los límites no pueden ser iguales.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (limInf > limSup) {
             JOptionPane.showMessageDialog(this,
                     "El límite inferior debe ser menor al superior.",
                     "Error", JOptionPane.ERROR_MESSAGE);
@@ -224,20 +236,12 @@ public class ConfigIntegralDialog extends JDialog {
         return true;
     }
 
-    public Double getLimiteInferior() {
-        try {
-            return Double.parseDouble(txtLimiteInferior.getText());
-        } catch (NumberFormatException e) {
-            return null;
-        }
+    public double getLimiteInferior() {
+        return ((Number) spLimiteInferior.getValue()).doubleValue();
     }
 
-    public Double getLimiteSuperior() {
-        try {
-            return Double.parseDouble(txtLimiteSuperior.getText());
-        } catch (NumberFormatException e) {
-            return null;
-        }
+    public double getLimiteSuperior() {
+        return ((Number) spLimiteSuperior.getValue()).doubleValue();
     }
 
     public boolean getLimitesAleatorios() {
