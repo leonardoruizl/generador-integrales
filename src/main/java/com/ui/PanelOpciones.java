@@ -13,10 +13,9 @@ public class PanelOpciones extends JPanel {
     private final NumberFormat numberFormat;
 
     public PanelOpciones() {
-        setLayout(new GridLayout(0, 1, 6, 4));
-        setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(225, 229, 236)),
-                BorderFactory.createEmptyBorder(8, 10, 8, 10)));
+        setLayout(new BorderLayout(0, 10));
+        setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
+        setOpaque(false);
         botones = new JRadioButton[5];
         grupoOpciones = new ButtonGroup();
         numberFormat = NumberFormat.getNumberInstance(Locale.US);
@@ -30,6 +29,22 @@ public class PanelOpciones extends JPanel {
         removeAll(); // Limpiar opciones anteriores
         grupoOpciones = new ButtonGroup(); // Reiniciar el grupo de botones
 
+        JPanel contenedor = new JPanel(new GridLayout(0, 1, 6, 6));
+        contenedor.setOpaque(false);
+
+        JLabel titulo = new JLabel("Opciones de respuesta", SwingConstants.LEFT);
+        titulo.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        titulo.setBorder(BorderFactory.createEmptyBorder(4, 6, 2, 6));
+        titulo.setForeground(new Color(52, 61, 83));
+
+        JPanel tarjeta = new JPanel(new BorderLayout());
+        tarjeta.setOpaque(true);
+        tarjeta.setBackground(new Color(255, 255, 255, 235));
+        tarjeta.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(220, 226, 235)),
+                BorderFactory.createEmptyBorder(10, 12, 12, 12)
+        ));
+
         char[] letras = {'A', 'B', 'C', 'D', 'E'};
 
         for (int i = 0; i < 5; i++) {
@@ -40,11 +55,16 @@ public class PanelOpciones extends JPanel {
             botones[i].setBackground(new Color(250, 252, 255));
             botones[i].setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(new Color(235, 238, 244)),
-                    BorderFactory.createEmptyBorder(6, 8, 6, 8)));
+                    BorderFactory.createEmptyBorder(8, 10, 8, 10)));
             botones[i].setFocusPainted(false);
+            botones[i].setForeground(new Color(45, 52, 70));
             grupoOpciones.add(botones[i]);
-            add(botones[i]);
+            contenedor.add(botones[i]);
         }
+
+        tarjeta.add(titulo, BorderLayout.NORTH);
+        tarjeta.add(contenedor, BorderLayout.CENTER);
+        add(tarjeta, BorderLayout.CENTER);
 
         // Actualizar la interfaz
         revalidate();

@@ -13,9 +13,23 @@ public class PanelIntegral extends JPanel {
 
     public PanelIntegral() {
         super(new BorderLayout());
+        setOpaque(false);
+
         latexLabel = new JLabel();
         latexLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        add(latexLabel, BorderLayout.CENTER);
+        latexLabel.setBorder(BorderFactory.createEmptyBorder(16, 16, 16, 16));
+
+        JPanel tarjeta = new JPanel(new BorderLayout());
+        tarjeta.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(4, 4, 4, 4),
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(new Color(218, 223, 232)),
+                        BorderFactory.createEmptyBorder(18, 18, 18, 18)
+                )));
+        tarjeta.setBackground(new Color(255, 255, 255, 240));
+        tarjeta.add(latexLabel, BorderLayout.CENTER);
+
+        add(tarjeta, BorderLayout.CENTER);
     }
 
     public void mostrarIntegral(Integral integral) {
