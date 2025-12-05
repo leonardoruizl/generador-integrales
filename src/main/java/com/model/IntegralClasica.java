@@ -51,7 +51,9 @@ public class IntegralClasica implements IntegralEstrategia {
                 crearFraccionCuadratica(dificultad),
                 crearPolinomioExponencial(dificultad),
                 crearPolinomioTrigonometrico(dificultad),
-                crearInversaRaizCuadratica(dificultad)
+                crearInversaRaizCuadratica(dificultad),
+                crearPotenciaConDerivada(dificultad),
+                crearRacionalDerivada(dificultad)
         };
 
         return candidatas[RANDOM.nextInt(candidatas.length)];
@@ -135,22 +137,31 @@ public class IntegralClasica implements IntegralEstrategia {
      * \int x^2 e^{ax} dx
      */
     private Template crearPolinomioExponencial(Dificultad dificultad) {
+        int grado = switch (dificultad) {
+            case FACIL -> 1;
+            case DIFICIL -> 3;
+            default -> 2;
+        };
+
         int a = switch (dificultad) {
             case FACIL -> 1;
             case DIFICIL -> RANDOM.nextInt(3) + 3; // [3,5]
             default -> RANDOM.nextInt(2) + 2; // [2,3]
         };
 
-        DoubleUnaryOperator integrando = x -> x * x * Math.exp(a * x);
-        DoubleUnaryOperator primitiva = x -> Math.exp(a * x) * (x * x / a - 2 * x / (a * a) + 2 / Math.pow(a, 3));
+        int desplazamiento = dificultad == Dificultad.FACIL ? 0 : RANDOM.nextInt(3);
+        double[] coeficientes = generarPolinomio(grado);
+
+        DoubleUnaryOperator integrando = x -> evaluarPolinomio(coeficientes, x) * Math.exp(a * x + desplazamiento);
+        DoubleUnaryOperator primitiva = x -> integrarPolinomioPorExponencial(coeficientes, a, desplazamiento, x);
 
         List<String> pasos = List.of(
-                "Integración por partes (método del cacahuate): u = x^2, dv = e^{ax} dx.",
-                "Repetir el método para la integral restante \\int x e^{ax} dx.",
-                "Combinando ambos pasos se llega a e^{ax} \\left(\\tfrac{x^2}{a} - \\tfrac{2x}{a^2} + \\tfrac{2}{a^3}\\right)."
+                "Integración por partes tabular para productos P(x)e^{ax}.",
+                "Deriva el polinomio hasta anularlo y alterna signos multiplicando por potencias de a^{-1}.",
+                "El resultado general es e^{ax+b}\\sum_{k=0}^{n}(-1)^k \\frac{P^{(k)}(x)}{a^{k+1}}."
         );
 
-        String latex = String.format("x^{2} e^{%dx}", a);
+        String latex = String.format("(%s) e^{%dx%+d}", formatearPolinomio(coeficientes), a, desplazamiento);
         return new Template(integrando, primitiva, latex, pasos, (aLim, bLim) -> {
             // Sin restricciones de dominio
         });
@@ -160,22 +171,31 @@ public class IntegralClasica implements IntegralEstrategia {
      * \int x^2 \cos(kx) dx
      */
     private Template crearPolinomioTrigonometrico(Dificultad dificultad) {
+        int grado = switch (dificultad) {
+            case FACIL -> 1;
+            case DIFICIL -> 3;
+            default -> 2;
+        };
+
         int k = switch (dificultad) {
             case FACIL -> 1;
             case DIFICIL -> RANDOM.nextInt(3) + 3; // [3,5]
             default -> RANDOM.nextInt(2) + 2; // [2,3]
         };
 
-        DoubleUnaryOperator integrando = x -> x * x * Math.cos(k * x);
-        DoubleUnaryOperator primitiva = x -> (x * x * Math.sin(k * x)) / k + (2 * x * Math.cos(k * x)) / (k * k) - (2 * Math.sin(k * x)) / Math.pow(k, 3);
+        boolean usaSeno = RANDOM.nextBoolean();
+        double[] coeficientes = generarPolinomio(grado);
+
+        DoubleUnaryOperator integrando = x -> evaluarPolinomio(coeficientes, x) * (usaSeno ? Math.sin(k * x) : Math.cos(k * x));
+        DoubleUnaryOperator primitiva = x -> integrarPolinomioPorTrigonometrica(coeficientes, k, x, usaSeno);
 
         List<String> pasos = List.of(
-                "Integración parcial / método por partes con u = x^2 y dv = \\cos(kx)dx.",
-                "Aplicar nuevamente el método del cacahuate en \\int x \\sin(kx) dx.",
-                "El resultado combinado es \\tfrac{x^2\\sin(kx)}{k} + \\tfrac{2x\\cos(kx)}{k^2} - \\tfrac{2\\sin(kx)}{k^3}."
+                "Integración por partes tabular sobre P(x)\\sin(kx) o P(x)\\cos(kx).",
+                "Deriva el polinomio y alterna seno/coseno multiplicando por potencias de k^{-1}.",
+                "El esquema coincide con los ejemplos con potencias de x junto a senos o cosenos (método del cacahuate)."
         );
 
-        String latex = String.format("x^{2} \\cos(%dx)", k);
+        String latex = String.format("(%s) \\%s(%dx)", formatearPolinomio(coeficientes), usaSeno ? "sin" : "cos", k);
         return new Template(integrando, primitiva, latex, pasos, (aLim, bLim) -> {
             // Sin restricciones
         });
@@ -217,6 +237,172 @@ public class IntegralClasica implements IntegralEstrategia {
                 throw new ArithmeticException("Expresión bajo la raíz no positiva");
             }
         });
+    }
+
+    /**
+     * \int k x^{p-1} (ax^{p} + b)^{n} dx
+     * Ejemplos: x^2(3x^3-2)^3 o potencias trigonométricas tipo (sen(2x))^m cos(2x).
+     */
+    private Template crearPotenciaConDerivada(Dificultad dificultad) {
+        int p = dificultad == Dificultad.FACIL ? 2 : RANDOM.nextInt(2) + 2; // 2 o 3
+        int a = RANDOM.nextInt(3) + 2; // 2..4
+        int b = RANDOM.nextInt(4) - 2; // -2..1
+        int n = dificultad == Dificultad.DIFICIL ? RANDOM.nextInt(3) + 2 : RANDOM.nextInt(2) + 1; // 1..3 o 2..4
+
+        double factor = dificultad == Dificultad.FACIL ? 1.0 : (RANDOM.nextBoolean() ? a * p : 1.0);
+
+        DoubleUnaryOperator integrando = x -> factor * Math.pow(x, p - 1) * Math.pow(a * Math.pow(x, p) + b, n);
+        DoubleUnaryOperator primitiva = x -> factor / (a * p * (n + 1)) * Math.pow(a * Math.pow(x, p) + b, n + 1);
+
+        List<String> pasos = List.of(
+                String.format("Sustitución directa u = %dx^{%d} %+d.", a, p, b),
+                String.format("Entonces du = %d x^{%d} dx y la integral queda proporcional a u^{%d}.", a * p, p - 1, n),
+                "Se obtiene u^{n+1}/[(n+1)ap] evaluado en los límites."
+        );
+
+        String latex = String.format("%s x^{%d}(%dx^{%d}%+d)^{%d}",
+                factor == 1.0 ? "" : String.format("%.0f", factor), p - 1, a, p, b, n);
+        return new Template(integrando, primitiva, latex.trim(), pasos, (aLim, bLim) -> {
+            // sin restricciones adicionales
+        });
+    }
+
+    /**
+     * \int c (2ax + b) / (ax^2 + bx + c)^n dx —
+     * cubre ejemplos tipo \int 2x/(7x^2-2)^2 dx o variantes con potencias > 1.
+     */
+    private Template crearRacionalDerivada(Dificultad dificultad) {
+        int a = RANDOM.nextInt(4) + 2; // 2..5
+        int b = RANDOM.nextInt(5) - 2; // -2..2
+        int c = RANDOM.nextInt(4) + 3; // 3..6
+        int potencia = dificultad == Dificultad.FACIL ? 2 : RANDOM.nextInt(2) + 2; // 2 o 3
+
+        double factor = dificultad == Dificultad.DIFICIL ? RANDOM.nextInt(3) + 1 : 1.0;
+
+        DoubleUnaryOperator integrando = x -> factor * (2 * a * x + b) / Math.pow(a * x * x + b * x + c, potencia);
+        DoubleUnaryOperator primitiva = x -> factor / (1 - potencia) * 1.0 / Math.pow(a * x * x + b * x + c, potencia - 1);
+
+        List<String> pasos = List.of(
+                "Reconocer la derivada del denominador: d/dx(ax^2 + bx + c) = 2ax + b.",
+                "Se usa u = ax^2 + bx + c ⇒ du = (2ax + b) dx.",
+                String.format("La integral queda c\\int u^{-%d} du = \\tfrac{c}{1-%d} u^{1-%d}.", potencia, potencia, potencia)
+        );
+
+        String factorLatex = factor == 1.0 ? "" : String.format("%.0f\\,", factor);
+        String latex = String.format("\\frac{%s(2 %dx %+d)}{(%dx^{2} %+d x %+d)^{%d}}",
+                factorLatex, a, b, a, b, c, potencia);
+
+        return new Template(integrando, primitiva, latex, pasos, (aLim, bLim) -> {
+            double denomInf = a * aLim * aLim + b * aLim + c;
+            double denomSup = a * bLim * bLim + b * bLim + c;
+            if (denomInf == 0 || denomSup == 0) {
+                throw new ArithmeticException("Denominador nulo en los límites");
+            }
+        });
+    }
+
+    private double[] generarPolinomio(int grado) {
+        double[] coef = new double[grado + 1];
+        for (int i = 0; i <= grado; i++) {
+            int valor = RANDOM.nextInt(4) + 1; // 1..4
+            if (i != grado && RANDOM.nextBoolean()) {
+                valor *= -1;
+            }
+            coef[i] = valor;
+        }
+        return coef;
+    }
+
+    private double evaluarPolinomio(double[] coef, double x) {
+        double suma = 0;
+        double potencia = 1;
+        for (double v : coef) {
+            suma += v * potencia;
+            potencia *= x;
+        }
+        return suma;
+    }
+
+    private double integrarPolinomioPorExponencial(double[] coef, double a, double desplazamiento, double x) {
+        double suma = 0;
+        double[] derivada = coef.clone();
+
+        for (int k = 0; k < coef.length; k++) {
+            double valorPoli = evaluarPolinomio(derivada, x);
+            double termino = Math.pow(-1, k) * valorPoli / Math.pow(a, k + 1);
+            suma += termino;
+            derivada = derivar(derivada);
+            if (derivada.length == 0) {
+                break;
+            }
+        }
+
+        return Math.exp(a * x + desplazamiento) * suma;
+    }
+
+    private double integrarPolinomioPorTrigonometrica(double[] coef, double k, double x, boolean conSeno) {
+        double suma = 0;
+        double[] derivada = coef.clone();
+
+        for (int j = 0; j < coef.length; j++) {
+            double valorPoli = evaluarPolinomio(derivada, x);
+            double factor = Math.pow(-1, conSeno ? j + 1 : j) / Math.pow(k, j + 1);
+
+            double trig = obtenerTrigonometrica(k, x, conSeno, j);
+            suma += factor * valorPoli * trig;
+
+            derivada = derivar(derivada);
+            if (derivada.length == 0) {
+                break;
+            }
+        }
+
+        return suma;
+    }
+
+    private double obtenerTrigonometrica(double k, double x, boolean integrandoEraSeno, int orden) {
+        boolean usarSeno = integrandoEraSeno ? orden % 2 == 1 : orden % 2 == 0;
+        return usarSeno ? Math.sin(k * x) : Math.cos(k * x);
+    }
+
+    private double[] derivar(double[] coef) {
+        if (coef.length <= 1) {
+            return new double[0];
+        }
+
+        double[] derivada = new double[coef.length - 1];
+        for (int i = 1; i < coef.length; i++) {
+            derivada[i - 1] = coef[i] * i;
+        }
+        return derivada;
+    }
+
+    private String formatearPolinomio(double[] coef) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = coef.length - 1; i >= 0; i--) {
+            double c = coef[i];
+            if (c == 0) {
+                continue;
+            }
+            if (sb.length() > 0) {
+                sb.append(c > 0 ? " + " : " - ");
+            } else if (c < 0) {
+                sb.append("-");
+            }
+
+            double abs = Math.abs(c);
+            if (!(abs == 1 && i > 0)) {
+                sb.append((int) abs);
+            }
+
+            if (i >= 1) {
+                sb.append("x");
+                if (i > 1) {
+                    sb.append("^{").append(i).append("}");
+                }
+            }
+        }
+        return sb.toString();
     }
 
     private static class Template {
