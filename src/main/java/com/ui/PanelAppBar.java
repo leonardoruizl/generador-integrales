@@ -12,13 +12,17 @@ public class PanelAppBar extends JPanel {
 
     public PanelAppBar(ActionListener nuevaIntegralListener, ActionListener menuListener) {
         super(new BorderLayout());
-        setBackground(new Color(45, 45, 45));
-        setBorder(BorderFactory.createEmptyBorder(8, 12, 8, 0));
+        setBackground(new Color(36, 47, 81));
+        setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(55, 69, 107)),
+                BorderFactory.createEmptyBorder(10, 14, 10, 4)
+        ));
 
         // Título
         JLabel titulo = new JLabel("Generador de Integrales", SwingConstants.LEFT);
         titulo.setForeground(Color.WHITE);
         titulo.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        titulo.setBorder(BorderFactory.createEmptyBorder(0, 4, 0, 0));
         add(titulo, BorderLayout.WEST);
 
         // Panel derecho de botones

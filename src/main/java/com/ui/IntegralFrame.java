@@ -34,6 +34,7 @@ public class IntegralFrame extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(720, 620);
         setLocationRelativeTo(null);
+        getContentPane().setBackground(new Color(242, 245, 250));
         setLayout(new BorderLayout(10, 10));
 
         // Crear los paneles junto con los listeners
@@ -53,15 +54,24 @@ public class IntegralFrame extends JFrame {
         // Panel superior
         JPanel panelPrincipal = new JPanel();
         panelPrincipal.setLayout(new BoxLayout(panelPrincipal, BoxLayout.Y_AXIS));
-        panelPrincipal.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        panelPrincipal.setBorder(BorderFactory.createEmptyBorder(14, 16, 10, 16));
+        panelPrincipal.setOpaque(false);
 
         JScrollPane scrollOpciones = new JScrollPane(panelOpciones, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollOpciones.setPreferredSize(new Dimension(550, 150));
+        scrollOpciones.setPreferredSize(new Dimension(550, 170));
         scrollOpciones.setBorder(BorderFactory.createEmptyBorder());
+        scrollOpciones.getViewport().setOpaque(false);
+        scrollOpciones.setOpaque(false);
 
-        panelPrincipal.add(panelIntegral);
-        panelPrincipal.add(panelGrafica);
-        panelPrincipal.add(Box.createRigidArea(new Dimension(0, 10)));
+        JPanel seccionSuperior = new JPanel();
+        seccionSuperior.setLayout(new BoxLayout(seccionSuperior, BoxLayout.Y_AXIS));
+        seccionSuperior.setOpaque(false);
+        seccionSuperior.add(panelIntegral);
+        seccionSuperior.add(Box.createRigidArea(new Dimension(0, 12)));
+        seccionSuperior.add(panelGrafica);
+
+        panelPrincipal.add(seccionSuperior);
+        panelPrincipal.add(Box.createRigidArea(new Dimension(0, 12)));
         panelPrincipal.add(scrollOpciones);
 
         add(panelAppBar, BorderLayout.NORTH);
