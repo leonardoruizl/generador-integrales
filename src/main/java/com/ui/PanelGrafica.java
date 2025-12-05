@@ -44,7 +44,8 @@ public class PanelGrafica extends JPanel {
     private final int margen = 48;
 
     public PanelGrafica() {
-        setPreferredSize(new Dimension(620, 620));
+        setPreferredSize(new Dimension(640, 360));
+        setMinimumSize(new Dimension(520, 260));
         setBackground(COLOR_FONDO);
         setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(210, 215, 224)),
