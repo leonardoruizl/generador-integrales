@@ -28,6 +28,7 @@ public class IntegralFrame extends JFrame {
     private final PanelControl panelControl;
     private final NumberFormat numberFormat;
     private List<String> pasosActuales;
+    private JLabel resumenLabel;
 
     public IntegralFrame() {
         setTitle("Generador de Integrales");
@@ -60,6 +61,7 @@ public class IntegralFrame extends JFrame {
         scrollOpciones.setBorder(BorderFactory.createEmptyBorder());
 
         panelPrincipal.add(panelIntegral);
+        panelPrincipal.add(crearPanelResumen());
         panelPrincipal.add(Box.createRigidArea(new Dimension(0, 10)));
         panelPrincipal.add(panelGrafica);
         panelPrincipal.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -87,6 +89,10 @@ public class IntegralFrame extends JFrame {
                 b = tmp;
             }
 
+            if (a == b) {
+                b = a + 1;
+            }
+
             limiteInferior = a;
             limiteSuperior = b;
         }
@@ -102,6 +108,8 @@ public class IntegralFrame extends JFrame {
             panelOpciones.mostrarOpciones(integral.getOpciones());
             panelControl.reset();
             pasosActuales = null;
+
+            actualizarResumen();
 
             revalidate();
             repaint();
@@ -125,6 +133,23 @@ public class IntegralFrame extends JFrame {
     private void mostrarMenu() {
         JButton boton = panelAppBar.getBotonMenu();
         popupMenu.show(boton, 0, boton.getHeight());
+    }
+
+    private JPanel crearPanelResumen() {
+        resumenLabel = new JLabel();
+        resumenLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        resumenLabel.setForeground(new Color(60, 60, 60));
+
+        JPanel panelResumen = new JPanel(new BorderLayout());
+        panelResumen.setBackground(new Color(248, 250, 252));
+        panelResumen.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(230, 233, 240)),
+                BorderFactory.createEmptyBorder(8, 12, 8, 12)
+        ));
+
+        panelResumen.add(resumenLabel, BorderLayout.CENTER);
+        actualizarResumen();
+        return panelResumen;
     }
 
     private void mostrarConfiguracionIntegral() {
@@ -201,5 +226,33 @@ public class IntegralFrame extends JFrame {
         panelControl.actualizarEstadoGrafica(graficaVisible);
         revalidate();
         repaint();
+    }
+
+    private void actualizarResumen() {
+        if (resumenLabel == null) {
+            return;
+        }
+
+        String tipoTexto = switch (tipo) {
+            case "raiz" -> "Raíz";
+            case "fraccion" -> "Fracción";
+            case "trig" -> "Trigonométrica";
+            case "clasica" -> "Clásica";
+            default -> "Aleatoria";
+        };
+
+        String limitesTexto = limitesAleatorios
+                ? "Se generarán de forma aleatoria"
+                : String.format("[%s, %s]", numberFormat.format(limiteInferior), numberFormat.format(limiteSuperior));
+
+        String pasosTexto = mostrarPasos ? "Se mostrarán pasos" : "Pasos ocultos";
+
+        resumenLabel.setText(String.format(
+                "<html><b>Tipo:</b> %s &nbsp;&nbsp; <b>Dificultad:</b> %s<br/><b>Límites:</b> %s &nbsp;&nbsp; <b>Pasos:</b> %s</html>",
+                tipoTexto,
+                dificultad.name().substring(0, 1) + dificultad.name().substring(1).toLowerCase(),
+                limitesTexto,
+                pasosTexto
+        ));
     }
 }

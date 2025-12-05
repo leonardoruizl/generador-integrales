@@ -13,7 +13,10 @@ public class PanelOpciones extends JPanel {
     private final NumberFormat numberFormat;
 
     public PanelOpciones() {
-        setLayout(new GridLayout(0, 1, 5, 2));
+        setLayout(new GridLayout(0, 1, 6, 4));
+        setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(225, 229, 236)),
+                BorderFactory.createEmptyBorder(8, 10, 8, 10)));
         botones = new JRadioButton[5];
         grupoOpciones = new ButtonGroup();
         numberFormat = NumberFormat.getNumberInstance(Locale.US);
@@ -27,10 +30,18 @@ public class PanelOpciones extends JPanel {
         removeAll(); // Limpiar opciones anteriores
         grupoOpciones = new ButtonGroup(); // Reiniciar el grupo de botones
 
+        char[] letras = {'A', 'B', 'C', 'D', 'E'};
+
         for (int i = 0; i < 5; i++) {
             String textoOpcion = numberFormat.format(redondearCincoDecimales(opciones[i]));
-            botones[i] = new JRadioButton(textoOpcion);
+            botones[i] = new JRadioButton(String.format("%s) %s", letras[i], textoOpcion));
             botones[i].setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            botones[i].setOpaque(true);
+            botones[i].setBackground(new Color(250, 252, 255));
+            botones[i].setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(new Color(235, 238, 244)),
+                    BorderFactory.createEmptyBorder(6, 8, 6, 8)));
+            botones[i].setFocusPainted(false);
             grupoOpciones.add(botones[i]);
             add(botones[i]);
         }
