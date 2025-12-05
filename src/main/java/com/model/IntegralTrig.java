@@ -45,6 +45,7 @@ public class IntegralTrig implements IntegralEstrategia {
     @Override
     public List<String> getPasos() {
         return List.of(
+                "Cambio de variable d/du para reducir el argumento trigonométrico.",
                 String.format("Sea \\(u = %dx\\), entonces \\(du = %d\\,dx\\).", k, k),
                 """
                         \\[

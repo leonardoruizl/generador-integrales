@@ -74,6 +74,7 @@ public class IntegralFraccion implements IntegralEstrategia {
     @Override
     public List<String> getPasos() {
         return List.of(
+                "Fracciones parciales: separar la constante y el término logarítmico.",
                 "Reescribimos:",
                 String.format("""
                         \\[
