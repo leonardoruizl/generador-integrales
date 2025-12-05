@@ -49,7 +49,7 @@ public class ConfigIntegralDialog extends JDialog {
     private void initUi() {
         setLayout(new BorderLayout(10, 10));
         setResizable(false);
-        setPreferredSize(new Dimension(460, 520));
+        setPreferredSize(new Dimension(460, 500));
 
         JLabel encabezado = new JLabel("Personaliza el ejercicio antes de generarlo");
         encabezado.setBorder(BorderFactory.createEmptyBorder(12, 12, 0, 12));
@@ -214,7 +214,10 @@ public class ConfigIntegralDialog extends JDialog {
         centroPanel.add(pasosPanel);
         centroPanel.add(limitesPanel);
 
-        add(centroPanel, BorderLayout.CENTER);
+        JScrollPane scrollCentro = new JScrollPane(centroPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollCentro.setBorder(BorderFactory.createEmptyBorder());
+
+        add(scrollCentro, BorderLayout.CENTER);
         add(panelBotones, BorderLayout.SOUTH);
     }
 
