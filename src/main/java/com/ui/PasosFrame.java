@@ -71,10 +71,13 @@ public class PasosFrame extends JFrame {
 
     private void actualizarPaso() {
         String pasoLatex = pasos.get(index);
+        // En modo matemático LaTeX ignora los espacios, lo que hacía que las palabras aparecieran pegadas.
+        // Reemplazamos los espacios por "\ " para forzar un espaciado visible en el renderizado.
+        String pasoConEspacios = pasoLatex.replace(" ", "\\ ");
 
         try {
             // Intentar renderizar LaTeX
-            TeXFormula formula = new TeXFormula(pasoLatex);
+            TeXFormula formula = new TeXFormula(pasoConEspacios);
             TeXIcon icon = formula.createTeXIcon(TeXConstants.STYLE_DISPLAY, 20);
 
             lblPaso.setIcon(icon);
