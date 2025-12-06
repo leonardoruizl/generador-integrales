@@ -76,8 +76,7 @@ public class PanelControl extends JPanel {
         boton.setFont(new Font("Segoe UI", Font.BOLD, 14));
         boton.setAlignmentX(Component.CENTER_ALIGNMENT);
         boton.setBackground(color);
-        boton.setForeground(Color.WHITE);
-        boton.setDisabledTextColor(new Color(235, 238, 245));
+        boton.setForeground(Color.BLACK);
         boton.setFocusPainted(false);
         boton.setBorder(BorderFactory.createEmptyBorder(10, 18, 10, 18));
         boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -85,10 +84,10 @@ public class PanelControl extends JPanel {
         boton.addChangeListener(e -> {
             if (boton.isEnabled()) {
                 boton.setBackground(color);
-                boton.setForeground(Color.WHITE);
+                boton.setForeground(Color.BLACK);
             } else {
                 boton.setBackground(color.darker());
-                boton.setForeground(new Color(235, 238, 245));
+                boton.setForeground(Color.BLACK);
             }
         });
         return boton;
