@@ -9,7 +9,7 @@ import java.util.Set;
 public class OpcionGenerator {
     private final Random random;
 
-    public record OpcionesGeneradas(double[] opciones, int opcionCorrecta, double resultadoNormalizado) {}
+    public  record OpcionesGeneradas(double[] opciones, int opcionCorrecta, double resultadoNormalizado) {}
 
     public OpcionGenerator() {
         this(new Random());

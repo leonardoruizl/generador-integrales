@@ -31,7 +31,7 @@ public class IntegralFrame extends JFrame {
     public IntegralFrame() {
         setTitle("Generador de Integrales");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(900, 760);
+        setSize(900, 678);
         setLocationRelativeTo(null);
         getContentPane().setBackground(new Color(242, 245, 250));
         setLayout(new BorderLayout(10, 10));
