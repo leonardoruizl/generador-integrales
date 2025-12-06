@@ -66,7 +66,7 @@ public class IntegralTrig implements IntegralEstrategia {
     @Override
     public List<String> getPasos() {
         return List.of(
-                "Cambio de variable d/du para simplificar el argumento trigonométrico.",
+                "Cambio de variable d y du para simplificar el argumento trigonométrico.",
                 String.format(Locale.US, "Sea \\(u = %dx%+2.2f\\), entonces \\(du = %d\\,dx\\).", k, fase, k),
                 usaCoseno
                         ? "\\int A\\cos(u)\\,du = A\\,\\sin(u)"
