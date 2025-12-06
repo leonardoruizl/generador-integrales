@@ -19,7 +19,6 @@ public class PanelControl extends JPanel {
     private final JComboBox<MetodoResolucion> metodoCombo;
     private final JLabel metodosSugeridos;
     private final JPanel selectorPanel;
-    private final JLabel onboardingLabel;
     private Set<MetodoResolucion> metodosCompatibles;
     private boolean selectorVisible;
 
@@ -70,20 +69,10 @@ public class PanelControl extends JPanel {
         selectorPanel.add(metodosSugeridos);
         selectorPanel.setVisible(false);
 
-        onboardingLabel = new JLabel("<html><b>Consejo rápido:</b> 1) Elige una opción, 2) Verifica, 3) Revisa pasos o gráfica.</html>");
-        onboardingLabel.setForeground(new Color(64, 82, 115));
-        onboardingLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        onboardingLabel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(220, 227, 239)),
-                BorderFactory.createEmptyBorder(10, 10, 10, 10)
-        ));
-        onboardingLabel.setBackground(new Color(255, 255, 255, 235));
-        onboardingLabel.setOpaque(true);
-
-        verificarBoton = crearBotonPrimario("✔ Verificar respuesta", new Color(70, 95, 200));
+        verificarBoton = crearBotonPrimario("Verificar respuesta", new Color(70, 95, 200));
         verificarBoton.addActionListener(verificarListener);
 
-        verPasosBoton = crearBotonSecundario("🧭 Ver pasos");
+        verPasosBoton = crearBotonSecundario("Ver pasos");
         verPasosBoton.addActionListener(verPasosListener);
         verPasosBoton.setEnabled(false);
 
@@ -118,8 +107,6 @@ public class PanelControl extends JPanel {
         tarjetaBotones.add(verPasosBoton);
         tarjetaBotones.add(Box.createRigidArea(new Dimension(0, 6)));
         tarjetaBotones.add(verGraficaBoton);
-        tarjetaBotones.add(Box.createRigidArea(new Dimension(0, 12)));
-        tarjetaBotones.add(onboardingLabel);
 
         add(tarjetaBotones);
         add(Box.createRigidArea(new Dimension(0, 12))); // Espacio opcional entre botón y mensaje
@@ -142,7 +129,6 @@ public class PanelControl extends JPanel {
         metodosCompatibles = EnumSet.noneOf(MetodoResolucion.class);
         metodosSugeridos.setText("Selecciona un método para validar si aplica");
         mostrarSelectorMetodos(false);
-        onboardingLabel.setVisible(true);
     }
 
     public void habilitarVerPasos(boolean habilitado) {
@@ -155,9 +141,6 @@ public class PanelControl extends JPanel {
 
     public void setVerificarHabilitado(boolean habilitado) {
         verificarBoton.setEnabled(habilitado);
-        if (habilitado) {
-            onboardingLabel.setVisible(false);
-        }
     }
 
     public void mostrarSelectorMetodos(boolean visible) {
