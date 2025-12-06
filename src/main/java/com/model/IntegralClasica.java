@@ -336,7 +336,10 @@ public class IntegralClasica implements IntegralEstrategia {
 
         double factor = dificultad == Dificultad.DIFICIL ? RANDOM.nextInt(3) + 1 : 1.0;
 
-        DoubleUnaryOperator integrando = x -> factor * (2 * a * x + b) / Math.pow(a * x * x + b * x + c, potencia);
+        int coeficienteDerivada = 2 * a;
+
+        DoubleUnaryOperator integrando = x -> factor * (coeficienteDerivada * x + b)
+                / Math.pow(a * x * x + b * x + c, potencia);
         DoubleUnaryOperator primitiva = x -> factor / (1 - potencia) * 1.0 / Math.pow(a * x * x + b * x + c, potencia - 1);
 
         List<String> pasos = List.of(
@@ -346,8 +349,8 @@ public class IntegralClasica implements IntegralEstrategia {
         );
 
         String factorLatex = factor == 1.0 ? "" : String.format("%.0f\\,", factor);
-        String latex = String.format("\\frac{%s(2 %dx %+d)}{(%dx^{2} %+d x %+d)^{%d}}",
-                factorLatex, a, b, a, b, c, potencia);
+        String latex = String.format("\\frac{%s(%dx %+d)}{(%dx^{2} %+d x %+d)^{%d}}",
+                factorLatex, coeficienteDerivada, b, a, b, c, potencia);
 
         return new Template(integrando, primitiva, latex, pasos, List.of(MetodoResolucion.SUSTITUCION, MetodoResolucion.FORMULA_DIRECTA), (aLim, bLim) -> {
             double denomInf = a * aLim * aLim + b * aLim + c;
