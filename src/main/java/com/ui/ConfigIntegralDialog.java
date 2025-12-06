@@ -12,8 +12,9 @@ public class ConfigIntegralDialog extends JDialog {
     private JRadioButton rbFacil, rbMedio, rbDificil;
     private JCheckBox cbMostrarPasos, cbAleatorio;
     private JSpinner spLimiteInferior, spLimiteSuperior, spCantidadOpciones;
-    private JLabel etiquetaRango, descripcionDificultad;
+    private JLabel etiquetaRango, descripcionDificultad, errorLimites;
     private boolean confirmado = false;
+    private JButton btnAceptar;
 
     public ConfigIntegralDialog(Frame owner, IntegralConfig config) {
         super(owner, "Configuración de Integral", true);
@@ -44,6 +45,7 @@ public class ConfigIntegralDialog extends JDialog {
 
         actualizarResumenLimites();
         actualizarDescripcionDificultad();
+        validarLimitesEnLinea();
 
         pack();
         setLocationRelativeTo(owner);
@@ -192,6 +194,7 @@ public class ConfigIntegralDialog extends JDialog {
             spLimiteInferior.setEnabled(!aleatorio);
             spLimiteSuperior.setEnabled(!aleatorio);
             actualizarResumenLimites();
+            validarLimitesEnLinea();
         });
 
         rbFacil.addActionListener(e -> actualizarDescripcionDificultad());
@@ -206,7 +209,10 @@ public class ConfigIntegralDialog extends JDialog {
         c.gridy = 3;
         limitesPanel.add(etiquetaRango, c);
 
-        ChangeListener rangeListener = e -> actualizarResumenLimites();
+        ChangeListener rangeListener = e -> {
+            actualizarResumenLimites();
+            validarLimitesEnLinea();
+        };
         spLimiteInferior.addChangeListener(rangeListener);
         spLimiteSuperior.addChangeListener(rangeListener);
 
@@ -232,7 +238,12 @@ public class ConfigIntegralDialog extends JDialog {
         // Panel de botones
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-        JButton btnAceptar = new JButton("Aceptar");
+        errorLimites = new JLabel(" ");
+        errorLimites.setForeground(new Color(164, 44, 44));
+        errorLimites.setFont(errorLimites.getFont().deriveFont(Font.PLAIN, 12f));
+        panelBotones.add(errorLimites);
+
+        btnAceptar = new JButton("Aceptar");
         btnAceptar.addActionListener(e -> {
             if (validarLimites()) {
                 confirmado = true;
@@ -243,8 +254,8 @@ public class ConfigIntegralDialog extends JDialog {
         JButton btnCancelar = new JButton("Cancelar");
         btnCancelar.addActionListener(e -> dispose());
 
-        panelBotones.add(btnAceptar);
         panelBotones.add(btnCancelar);
+        panelBotones.add(btnAceptar);
 
         // Organizar el diálogo
         JPanel centroPanel = new JPanel();
@@ -306,43 +317,7 @@ public class ConfigIntegralDialog extends JDialog {
     }
 
     private boolean validarLimites() {
-        if (cbAleatorio.isSelected()) {
-            return true;
-        }
-
-        double limInf = getLimiteInferior();
-        double limSup = getLimiteSuperior();
-        double rango = limSup - limInf;
-
-        if (limInf == 0 && limSup == 0) {
-            JOptionPane.showMessageDialog(this,
-                    "Los límites no pueden ser ambos 0.",
-                    "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-
-        if (limInf == limSup) {
-            JOptionPane.showMessageDialog(this,
-                    "Los límites no pueden ser iguales.",
-                    "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-
-        if (limInf > limSup) {
-            JOptionPane.showMessageDialog(this,
-                    "El límite inferior debe ser menor al superior.",
-                    "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-
-        if (rango < 0.1) {
-            JOptionPane.showMessageDialog(this,
-                    "Usa un rango mayor para obtener ejercicios más interesantes (≥ 0.1).",
-                    "Rango demasiado corto", JOptionPane.WARNING_MESSAGE);
-            return false;
-        }
-
-        return true;
+        return validarLimitesEnLinea();
     }
 
     private void actualizarResumenLimites() {
@@ -363,6 +338,55 @@ public class ConfigIntegralDialog extends JDialog {
             etiquetaRango.setForeground(new Color(60, 90, 60));
             etiquetaRango.setText(String.format("Rango actual: %.3f unidades (%.3f a %.3f)", rango, limInf, limSup));
         }
+    }
+
+    private boolean validarLimitesEnLinea() {
+        if (cbAleatorio.isSelected()) {
+            errorLimites.setText(" ");
+            btnAceptar.setEnabled(true);
+            return true;
+        }
+
+        double limInf = getLimiteInferior();
+        double limSup = getLimiteSuperior();
+        double rango = limSup - limInf;
+
+        if (limInf == 0 && limSup == 0) {
+            mostrarErrorLimites("Los límites no pueden ser ambos 0.");
+            return false;
+        }
+
+        if (limInf == limSup) {
+            mostrarErrorLimites("Los límites no pueden ser iguales.");
+            return false;
+        }
+
+        if (limInf > limSup) {
+            mostrarErrorLimites("El límite inferior debe ser menor al superior.");
+            return false;
+        }
+
+        if (rango < 0.1) {
+            mostrarAdvertenciaLimites("Usa un rango mayor para obtener ejercicios más interesantes (≥ 0.1).");
+            return false;
+        }
+
+        errorLimites.setForeground(new Color(34, 102, 46));
+        errorLimites.setText("Límites listos para usar.");
+        btnAceptar.setEnabled(true);
+        return true;
+    }
+
+    private void mostrarErrorLimites(String mensaje) {
+        errorLimites.setForeground(new Color(164, 44, 44));
+        errorLimites.setText(mensaje);
+        btnAceptar.setEnabled(false);
+    }
+
+    private void mostrarAdvertenciaLimites(String mensaje) {
+        errorLimites.setForeground(new Color(196, 132, 40));
+        errorLimites.setText(mensaje);
+        btnAceptar.setEnabled(false);
     }
 
     private void actualizarDescripcionDificultad() {

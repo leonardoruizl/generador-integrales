@@ -19,13 +19,17 @@ public class PanelControl extends JPanel {
     private final JComboBox<MetodoResolucion> metodoCombo;
     private final JLabel metodosSugeridos;
     private final JPanel selectorPanel;
+    private final JLabel onboardingLabel;
     private Set<MetodoResolucion> metodosCompatibles;
     private boolean selectorVisible;
 
     public PanelControl(ActionListener verificarListener, ActionListener verPasosListener, ActionListener verGraficaListener) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBorder(BorderFactory.createEmptyBorder(12, 18, 22, 18));
-        setBackground(new Color(250, 252, 255));
+        setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(224, 229, 238)),
+                BorderFactory.createEmptyBorder(12, 18, 18, 18)
+        ));
+        setBackground(new Color(245, 248, 253));
         setOpaque(true);
 
         metodosCompatibles = EnumSet.noneOf(MetodoResolucion.class);
@@ -66,14 +70,24 @@ public class PanelControl extends JPanel {
         selectorPanel.add(metodosSugeridos);
         selectorPanel.setVisible(false);
 
-        verificarBoton = crearBotonPrimario("Verificar respuesta", new Color(70, 95, 200));
+        onboardingLabel = new JLabel("<html><b>Consejo rápido:</b> 1) Elige una opción, 2) Verifica, 3) Revisa pasos o gráfica.</html>");
+        onboardingLabel.setForeground(new Color(64, 82, 115));
+        onboardingLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        onboardingLabel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(220, 227, 239)),
+                BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        ));
+        onboardingLabel.setBackground(new Color(255, 255, 255, 235));
+        onboardingLabel.setOpaque(true);
+
+        verificarBoton = crearBotonPrimario("✔ Verificar respuesta", new Color(70, 95, 200));
         verificarBoton.addActionListener(verificarListener);
 
-        verPasosBoton = crearBotonSecundario("Ver pasos");
+        verPasosBoton = crearBotonSecundario("🧭 Ver pasos");
         verPasosBoton.addActionListener(verPasosListener);
         verPasosBoton.setEnabled(false);
 
-        verGraficaBoton = crearBotonSecundario("Ver gráfica");
+        verGraficaBoton = crearBotonSecundario("📈 Ver gráfica");
         verGraficaBoton.addActionListener(verGraficaListener);
 
         resultadoLabel = new JLabel();
@@ -88,14 +102,26 @@ public class PanelControl extends JPanel {
         resultadoLabel.setOpaque(true);
         resultadoLabel.setBackground(new Color(255, 255, 255, 235));
 
+        JPanel tarjetaBotones = new JPanel();
+        tarjetaBotones.setLayout(new BoxLayout(tarjetaBotones, BoxLayout.Y_AXIS));
+        tarjetaBotones.setOpaque(false);
+        tarjetaBotones.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(220, 226, 235)),
+                BorderFactory.createEmptyBorder(12, 12, 12, 12)
+        ));
+
         add(selectorPanel);
         add(Box.createRigidArea(new Dimension(0, 12)));
 
-        add(verificarBoton);
-        add(Box.createRigidArea(new Dimension(0, 6)));
-        add(verPasosBoton);
-        add(Box.createRigidArea(new Dimension(0, 6)));
-        add(verGraficaBoton);
+        tarjetaBotones.add(verificarBoton);
+        tarjetaBotones.add(Box.createRigidArea(new Dimension(0, 6)));
+        tarjetaBotones.add(verPasosBoton);
+        tarjetaBotones.add(Box.createRigidArea(new Dimension(0, 6)));
+        tarjetaBotones.add(verGraficaBoton);
+        tarjetaBotones.add(Box.createRigidArea(new Dimension(0, 12)));
+        tarjetaBotones.add(onboardingLabel);
+
+        add(tarjetaBotones);
         add(Box.createRigidArea(new Dimension(0, 12))); // Espacio opcional entre botón y mensaje
         add(resultadoLabel);
     }
@@ -109,13 +135,14 @@ public class PanelControl extends JPanel {
     public void reset() {
         resultadoLabel.setVisible(false);
         resultadoLabel.setText("");
-        verificarBoton.setEnabled(true);
+        verificarBoton.setEnabled(false);
         verPasosBoton.setEnabled(false);
         verGraficaBoton.setText("Ver gráfica");
         metodoCombo.setSelectedItem(null);
         metodosCompatibles = EnumSet.noneOf(MetodoResolucion.class);
         metodosSugeridos.setText("Selecciona un método para validar si aplica");
         mostrarSelectorMetodos(false);
+        onboardingLabel.setVisible(true);
     }
 
     public void habilitarVerPasos(boolean habilitado) {
@@ -123,7 +150,14 @@ public class PanelControl extends JPanel {
     }
 
     public void actualizarEstadoGrafica(boolean visible) {
-        verGraficaBoton.setText(visible ? "Ocultar gráfica" : "Ver gráfica");
+        verGraficaBoton.setText(visible ? "📉 Ocultar gráfica" : "📈 Ver gráfica");
+    }
+
+    public void setVerificarHabilitado(boolean habilitado) {
+        verificarBoton.setEnabled(habilitado);
+        if (habilitado) {
+            onboardingLabel.setVisible(false);
+        }
     }
 
     public void mostrarSelectorMetodos(boolean visible) {
@@ -180,7 +214,7 @@ public class PanelControl extends JPanel {
         boton.setFont(new Font("Segoe UI", Font.BOLD, 14));
         boton.setAlignmentX(Component.CENTER_ALIGNMENT);
         boton.setBackground(color);
-        boton.setForeground(Color.BLACK);
+        boton.setForeground(Color.WHITE);
         boton.setFocusPainted(false);
         boton.setBorder(BorderFactory.createEmptyBorder(10, 18, 10, 18));
         boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -188,10 +222,10 @@ public class PanelControl extends JPanel {
         boton.addChangeListener(e -> {
             if (boton.isEnabled()) {
                 boton.setBackground(color);
-                boton.setForeground(Color.BLACK);
+                boton.setForeground(Color.WHITE);
             } else {
                 boton.setBackground(color.darker());
-                boton.setForeground(Color.BLACK);
+                boton.setForeground(Color.WHITE);
             }
         });
         return boton;
@@ -202,11 +236,20 @@ public class PanelControl extends JPanel {
         boton.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         boton.setAlignmentX(Component.CENTER_ALIGNMENT);
         boton.setBackground(new Color(236, 240, 247));
-        boton.setForeground(new Color(54, 65, 92));
+        boton.setForeground(new Color(35, 48, 78));
         boton.setFocusPainted(false);
         boton.setBorder(BorderFactory.createEmptyBorder(9, 18, 9, 18));
         boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         boton.setOpaque(true);
+        boton.addChangeListener(e -> {
+            if (boton.isEnabled()) {
+                boton.setBackground(new Color(236, 240, 247));
+                boton.setForeground(new Color(35, 48, 78));
+            } else {
+                boton.setBackground(new Color(224, 228, 236));
+                boton.setForeground(new Color(80, 92, 116));
+            }
+        });
         return boton;
     }
 }

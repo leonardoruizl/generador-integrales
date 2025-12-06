@@ -12,9 +12,9 @@ public class PanelAppBar extends JPanel {
 
     public PanelAppBar(ActionListener nuevaIntegralListener, ActionListener menuListener) {
         super(new BorderLayout());
-        setBackground(new Color(36, 47, 81));
+        setBackground(new Color(46, 66, 118));
         setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(55, 69, 107)),
+                BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(66, 86, 138)),
                 BorderFactory.createEmptyBorder(10, 14, 10, 4)
         ));
 
