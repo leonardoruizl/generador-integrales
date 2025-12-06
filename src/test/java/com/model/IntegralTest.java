@@ -14,7 +14,8 @@ class IntegralTest {
 
     @Test
     void opcionesRedondeadasSonUnicas() {
-        Integral integral = new Integral("raiz", 0, 1, Dificultad.MEDIA);
+        IntegralGenerator generator = new IntegralGenerator();
+        Integral integral = generator.crearIntegral("raiz", 0, 1, Dificultad.MEDIA, 4);
 
         double[] opciones = integral.getOpciones();
 
