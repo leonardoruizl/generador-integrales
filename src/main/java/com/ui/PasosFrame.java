@@ -28,7 +28,7 @@ public class PasosFrame extends JFrame {
         lblPaso.setHorizontalAlignment(SwingConstants.CENTER);
 
         JScrollPane scroll = new JScrollPane(lblPaso);
-        scroll.setPreferredSize(new Dimension(500, 200));
+        scroll.setPreferredSize(new Dimension(640, 320));
         scroll.getVerticalScrollBar().setUnitIncrement(16);
 
         btnAnterior = new JButton("Anterior");
@@ -51,6 +51,7 @@ public class PasosFrame extends JFrame {
 
         actualizarPaso();
         pack();
+        setMinimumSize(new Dimension(680, 420));
         setLocationRelativeTo(null);
         setVisible(true);
     }
