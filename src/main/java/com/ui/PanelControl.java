@@ -10,7 +10,9 @@ import java.util.Set;
 import javax.swing.plaf.basic.BasicButtonUI;
 
 import com.model.MetodoResolucion;
+import com.util.IconoCheck;
 import com.util.IconoGrafica;
+import com.util.IconoPasos;
 
 public class PanelControl extends JPanel {
     private final JButton verificarBoton;
@@ -71,14 +73,19 @@ public class PanelControl extends JPanel {
         selectorPanel.setVisible(false);
 
         verificarBoton = crearBotonPrimario("Verificar respuesta", new Color(70, 95, 200));
+        verificarBoton.setIcon(new IconoCheck(16, 16, Color.WHITE, 2.6f));
+        verificarBoton.setIconTextGap(8);
         verificarBoton.addActionListener(verificarListener);
 
         verPasosBoton = crearBotonSecundario("Ver pasos");
+        verPasosBoton.setIcon(new IconoPasos(16, 16, new Color(35, 48, 78), 2.2f));
+        verPasosBoton.setIconTextGap(8);
         verPasosBoton.addActionListener(verPasosListener);
         verPasosBoton.setEnabled(false);
 
         verGraficaBoton = crearBotonSecundario("Ver gráfica");
         verGraficaBoton.setIcon(new IconoGrafica(16, 16, new Color(35, 48, 78), 2.2f));
+        verGraficaBoton.setIconTextGap(8);
         verGraficaBoton.addActionListener(verGraficaListener);
 
         resultadoLabel = new JLabel();
