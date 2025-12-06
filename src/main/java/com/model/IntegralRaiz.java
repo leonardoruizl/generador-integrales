@@ -66,7 +66,7 @@ public class IntegralRaiz implements IntegralEstrategia {
     @Override
     public List<String> getPasos() {
         return List.of(
-                "Cambio de variable d/du para linealizar la raíz.",
+                "Cambio de variable d y du para linealizar la raíz.",
                 String.format("Sea \\(u = %dx + %d\\) ⇒ \\(du = %d\\,dx\\).", a, b, a),
                 """
                         \\[

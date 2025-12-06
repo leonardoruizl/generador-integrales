@@ -87,9 +87,9 @@ public class IntegralClasica implements IntegralEstrategia {
         };
 
         List<String> pasos = List.of(
-                "Sustitución trigonométrica para raíces cuadráticas: x = R\\sin(\\theta).",
-                "Entonces dx = R\\cos(\\theta)\\, d\\theta y R^2 - x^2 = R^2\\cos^2(\\theta).",
-                "Integrando en \\theta se obtiene por tablas el resultado \\frac{1}{2}\\left(x\\sqrt{R^2 - x^2} + R^2 \\arcsin(\\tfrac{x}{R})\\right)."
+                "Sustitución trigonométrica: toma x = R\\sin(\\theta) para eliminar la raíz.",
+                "Con dx = R\\cos(\\theta)\\,d\\theta el integrando queda proporcional a \\cos^{2}(\\theta).",
+                "Integra en \\theta y reemplaza x = R\\sin(\\theta) para volver a la variable original."
         );
 
         String latex = String.format("\\sqrt{%d - x^{2}}", radio * radio);
@@ -119,9 +119,9 @@ public class IntegralClasica implements IntegralEstrategia {
         DoubleUnaryOperator primitiva = x -> (a / 2.0) * Math.log(x * x + c) + (b / Math.sqrt(c)) * Math.atan(x / Math.sqrt(c));
 
         List<String> pasos = List.of(
-                "Fracciones parciales: separar \\frac{ax + b}{x^2 + c} en un término lineal y otro racional.",
-                "Cambio de variable d/du en el término \\frac{a x}{x^2 + c} con u = x^2 + c.",
-                "El segundo término coincide con la entrada de tablas \\int \\frac{1}{x^2 + c} dx = \\frac{1}{\\sqrt{c}} \\arctan(x/\\sqrt{c})."
+                "Fracciones parciales (A + B): separa \\frac{ax + b}{x^2 + c} en \\frac{a}{2}\\cdot\\frac{2x}{x^2 + c} + \\frac{b}{x^2 + c}.",
+                "Integra cada suma directa: el primer término produce \\tfrac{a}{2}\\ln(x^2 + c) y el segundo da \\tfrac{b}{\\sqrt{c}} \\arctan(x/\\sqrt{c}).",
+                "Combina ambos resultados y evalúa en los límites definidos."
         );
 
         String latex = String.format("\\frac{%dx + %d}{x^{2} + %d}", a, b, c);
@@ -157,9 +157,9 @@ public class IntegralClasica implements IntegralEstrategia {
         DoubleUnaryOperator primitiva = x -> integrarPolinomioPorExponencial(coeficientes, a, desplazamiento, x);
 
         List<String> pasos = List.of(
-                "Integración por partes tabular para productos P(x)e^{ax}.",
-                "Deriva el polinomio hasta anularlo y alterna signos multiplicando por potencias de a^{-1}.",
-                "El resultado general es e^{ax+b}\\sum_{k=0}^{n}(-1)^k \\frac{P^{(k)}(x)}{a^{k+1}}."
+                "Cacahuate o por partes: arma la tabla derivando P(x) y multiplicando por potencias de a^{-1}.",
+                "Suma los productos diagonales alternando signos hasta que el polinomio se anule.",
+                "El resultado compacto es e^{ax+b}\\sum_{k=0}^{n}(-1)^k \\frac{P^{(k)}(x)}{a^{k+1}}."
         );
 
         String latex = String.format("(%s) e^{%dx%+d}", formatearPolinomio(coeficientes), a, desplazamiento);
@@ -199,10 +199,10 @@ public class IntegralClasica implements IntegralEstrategia {
         };
 
         List<String> pasos = List.of(
-                "Aplicar integración por partes sobre el término exponencial y el trigonométrico.",
-                "Repetir el proceso genera un sistema de dos ecuaciones con la integral original.",
+                "Integración parcial: elige u el factor trigonométrico y dv = e^{ax} dx para generar una ecuación con la integral original.",
+                "Aplica la fórmula de partes dos veces y despeja la integral desconocida en el sistema resultante.",
                 String.format(
-                        "El resultado compacto es \\frac{A e^{ax}}{a^2 + b^2}(%s)",
+                        "Se obtiene \\frac{A e^{ax}}{a^2 + b^2}(%s) como primitiva.",
                         usaSeno ? "a\\sin(bx) - b\\cos(bx)" : "a\\cos(bx) + b\\sin(bx)"
                 )
         );
@@ -238,9 +238,9 @@ public class IntegralClasica implements IntegralEstrategia {
         DoubleUnaryOperator primitiva = x -> integrarPolinomioPorTrigonometrica(coeficientes, k, x, usaSeno);
 
         List<String> pasos = List.of(
-                "Integración por partes tabular sobre P(x)\\sin(kx) o P(x)\\cos(kx).",
-                "Deriva el polinomio y alterna seno/coseno multiplicando por potencias de k^{-1}.",
-                "El esquema coincide con los ejemplos con potencias de x junto a senos o cosenos (método del cacahuate)."
+                "Cacahuate o por partes: deriva P(x) en la tabla y alterna la integral de seno/coseno multiplicando por k^{-1}.",
+                "Combina los productos diagonales con signos alternos hasta agotar el polinomio.",
+                "Sustituye los términos obtenidos para formar la primitiva completa."
         );
 
         String latex = String.format("(%s) \\%s(%dx)", formatearPolinomio(coeficientes), usaSeno ? "sin" : "cos", k);
@@ -272,9 +272,9 @@ public class IntegralClasica implements IntegralEstrategia {
         };
 
         List<String> pasos = List.of(
-                "Sustitución trigonométrica (forma hiperbólica) para integrales tipo \\frac{1}{\\sqrt{a + bx^2}}.",
-                "Completa cuadrado: a + bx^2 = a\\left(1 + \\tfrac{b}{a}x^2\\right) y toma x = \\sqrt{a/b}\\,\\sinh(u).",
-                "Usa la entrada de tablas de \\int \\frac{1}{\\sqrt{1 + t^2}} dt para obtener \\tfrac{1}{\\sqrt{b}}\\,\\operatorname{arcsinh}\\left(x\\sqrt{\\tfrac{b}{a}}\\right)."
+                "Sustitución trigonométrica: completa cuadrado y usa x = \\sqrt{a/b}\\,\\sinh(u) para linealizar la raíz.",
+                "El diferencial queda dx = \\sqrt{a/b}\\,\\cosh(u) du y el integrando se transforma en \\int \\frac{1}{\\sqrt{1 + \\sinh^{2}(u)}} du.",
+                "Integra en u y regresa a x reemplazando u = \\operatorname{arcsinh}\\left(x\\sqrt{\\tfrac{b}{a}}\\right)."
         );
 
         String latex = String.format("\\frac{1}{\\sqrt{%d + %dx^{2}}}", a, b);
@@ -303,9 +303,9 @@ public class IntegralClasica implements IntegralEstrategia {
         DoubleUnaryOperator primitiva = x -> factor / (a * p * (n + 1)) * Math.pow(a * Math.pow(x, p) + b, n + 1);
 
         List<String> pasos = List.of(
-                String.format("Sustitución directa u = %dx^{%d} %+d.", a, p, b),
-                String.format("Entonces du = %d x^{%d} dx y la integral queda proporcional a u^{%d}.", a * p, p - 1, n),
-                "Se obtiene u^{n+1}/[(n+1)ap] evaluado en los límites."
+                String.format("Cambio de variable d y du: usa u = %dx^{%d} %+d para igualar el factor derivado.", a, p, b),
+                String.format("Entonces du = %d x^{%d} dx y la integral se vuelve una potencia simple de u^{%d}.", a * p, p - 1, n),
+                "Integra u^{n} y reemplaza u para evaluar en los límites originales."
         );
 
         String latex = String.format("%s x^{%d}(%dx^{%d}%+d)^{%d}",
@@ -331,9 +331,9 @@ public class IntegralClasica implements IntegralEstrategia {
         DoubleUnaryOperator primitiva = x -> factor / (1 - potencia) * 1.0 / Math.pow(a * x * x + b * x + c, potencia - 1);
 
         List<String> pasos = List.of(
-                "Reconocer la derivada del denominador: d/dx(ax^2 + bx + c) = 2ax + b.",
-                "Se usa u = ax^2 + bx + c ⇒ du = (2ax + b) dx.",
-                String.format("La integral queda c\\int u^{-%d} du = \\tfrac{c}{1-%d} u^{1-%d}.", potencia, potencia, potencia)
+                "Cambio de variable d y du: reconoce que d/dx(ax^2 + bx + c) = 2ax + b.",
+                "Con u = ax^2 + bx + c se tiene du = (2ax + b) dx y el integrando se convierte en u^{-n}.",
+                String.format("Integra \\int u^{-%d} du para obtener \\tfrac{1}{1-%d} u^{1-%d} multiplicado por la constante inicial.", potencia, potencia, potencia)
         );
 
         String factorLatex = factor == 1.0 ? "" : String.format("%.0f\\,", factor);
