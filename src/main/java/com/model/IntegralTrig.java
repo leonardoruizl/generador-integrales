@@ -78,6 +78,6 @@ public class IntegralTrig implements IntegralEstrategia {
 
     @Override
     public List<MetodoResolucion> getMetodosCompatibles() {
-        return List.of(MetodoResolucion.SUSTITUCION, MetodoResolucion.TRIGONOMETRICA, MetodoResolucion.FORMULA_DIRECTA);
+        return List.of(MetodoResolucion.SUSTITUCION, MetodoResolucion.FORMULA_DIRECTA);
     }
 }

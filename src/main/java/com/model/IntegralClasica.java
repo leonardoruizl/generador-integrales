@@ -100,7 +100,7 @@ public class IntegralClasica implements IntegralEstrategia {
         );
 
         String latex = String.format("\\sqrt{%d - x^{2}}", radio * radio);
-        return new Template(integrando, primitiva, latex, pasos, List.of(MetodoResolucion.TRIGONOMETRICA, MetodoResolucion.SUSTITUCION), (a, b) -> {
+        return new Template(integrando, primitiva, latex, pasos, List.of(MetodoResolucion.TRIGONOMETRICA), (a, b) -> {
             double max = Math.max(Math.abs(a), Math.abs(b));
             if (max >= radio) {
                 throw new ArithmeticException("Los límites salen del círculo de radio " + radio);
@@ -287,7 +287,7 @@ public class IntegralClasica implements IntegralEstrategia {
         );
 
         String latex = String.format("\\frac{1}{\\sqrt{%d + %dx^{2}}}", a, b);
-        return new Template(integrando, primitiva, latex, pasos, List.of(MetodoResolucion.TRIGONOMETRICA, MetodoResolucion.SUSTITUCION), (aLim, bLim) -> {
+        return new Template(integrando, primitiva, latex, pasos, List.of(MetodoResolucion.TRIGONOMETRICA), (aLim, bLim) -> {
             double valorInf = a + b * aLim * aLim;
             double valorSup = a + b * bLim * bLim;
             if (valorInf <= 0 || valorSup <= 0) {
