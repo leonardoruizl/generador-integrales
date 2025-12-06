@@ -3,6 +3,7 @@ package com.ui;
 import com.model.Integral;
 import com.model.IntegralConfig;
 import com.model.IntegralGenerator;
+import com.model.MetodoResolucion;
 import com.util.PreferenciasUsuario;
 
 import javax.swing.*;
@@ -133,6 +134,7 @@ public class IntegralFrame extends JFrame {
             panelControl.actualizarEstadoGrafica(false);
             panelOpciones.mostrarOpciones(integral.getOpciones());
             panelControl.reset();
+            panelControl.configurarMetodos(integral.getMetodosCompatibles());
             pasosActuales = null;
 
             revalidate();
@@ -218,6 +220,23 @@ public class IntegralFrame extends JFrame {
                     "No hay pasos disponibles para esta integral.",
                     "Pasos no disponibles",
                     JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        MetodoResolucion metodoSeleccionado = panelControl.getMetodoSeleccionado();
+        if (metodoSeleccionado == null) {
+            JOptionPane.showMessageDialog(this,
+                    "Selecciona un método de resolución para validar si aplica a esta integral.",
+                    "Método no seleccionado",
+                    JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        if (!panelControl.esMetodoCompatibleSeleccionado()) {
+            JOptionPane.showMessageDialog(this,
+                    "El método elegido no es el recomendado para resolver esta integral. Prueba con uno de los sugeridos.",
+                    "Método no aplicable",
+                    JOptionPane.WARNING_MESSAGE);
             return;
         }
 

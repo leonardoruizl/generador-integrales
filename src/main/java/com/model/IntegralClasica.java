@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.DoubleUnaryOperator;
 
+import com.model.MetodoResolucion;
+
 /**
  * Estrategia que agrupa integrales "clásicas" como las de los ejemplos adjuntos
  * (producto con exponenciales o trigonométricas, radicales y fracciones
@@ -43,6 +45,11 @@ public class IntegralClasica implements IntegralEstrategia {
     @Override
     public List<String> getPasos() {
         return plantilla.pasos;
+    }
+
+    @Override
+    public List<MetodoResolucion> getMetodosCompatibles() {
+        return plantilla.metodos;
     }
 
     private Template seleccionarPlantilla(Dificultad dificultad) {
@@ -93,7 +100,7 @@ public class IntegralClasica implements IntegralEstrategia {
         );
 
         String latex = String.format("\\sqrt{%d - x^{2}}", radio * radio);
-        return new Template(integrando, primitiva, latex, pasos, (a, b) -> {
+        return new Template(integrando, primitiva, latex, pasos, List.of(MetodoResolucion.TRIGONOMETRICA, MetodoResolucion.SUSTITUCION), (a, b) -> {
             double max = Math.max(Math.abs(a), Math.abs(b));
             if (max >= radio) {
                 throw new ArithmeticException("Los límites salen del círculo de radio " + radio);
@@ -125,7 +132,7 @@ public class IntegralClasica implements IntegralEstrategia {
         );
 
         String latex = String.format("\\frac{%dx + %d}{x^{2} + %d}", a, b, c);
-        return new Template(integrando, primitiva, latex, pasos, (aLim, bLim) -> {
+        return new Template(integrando, primitiva, latex, pasos, List.of(MetodoResolucion.FRACCIONES_PARCIALES, MetodoResolucion.SUSTITUCION), (aLim, bLim) -> {
             double denomInf = aLim * aLim + c;
             double denomSup = bLim * bLim + c;
             if (denomInf <= 0 || denomSup <= 0) {
@@ -163,7 +170,7 @@ public class IntegralClasica implements IntegralEstrategia {
         );
 
         String latex = String.format("(%s) e^{%dx%+d}", formatearPolinomio(coeficientes), a, desplazamiento);
-        return new Template(integrando, primitiva, latex, pasos, (aLim, bLim) -> {
+        return new Template(integrando, primitiva, latex, pasos, List.of(MetodoResolucion.INTEGRACION_POR_PARTES, MetodoResolucion.FORMULA_DIRECTA), (aLim, bLim) -> {
             // Sin restricciones de dominio
         });
     }
@@ -210,7 +217,7 @@ public class IntegralClasica implements IntegralEstrategia {
         String latex = String.format("%s e^{%dx} \\%s(%dx)",
                 amplitud == 1 ? "" : amplitud, a, usaSeno ? "sin" : "cos", b);
 
-        return new Template(integrando, primitiva, latex, pasos, (aLim, bLim) -> {
+        return new Template(integrando, primitiva, latex, pasos, List.of(MetodoResolucion.INTEGRACION_POR_PARTES, MetodoResolucion.FORMULA_DIRECTA), (aLim, bLim) -> {
             // Integral definida siempre continua; sin restricciones adicionales
         });
     }
@@ -244,7 +251,7 @@ public class IntegralClasica implements IntegralEstrategia {
         );
 
         String latex = String.format("(%s) \\%s(%dx)", formatearPolinomio(coeficientes), usaSeno ? "sin" : "cos", k);
-        return new Template(integrando, primitiva, latex, pasos, (aLim, bLim) -> {
+        return new Template(integrando, primitiva, latex, pasos, List.of(MetodoResolucion.INTEGRACION_POR_PARTES), (aLim, bLim) -> {
             // Sin restricciones
         });
     }
@@ -278,7 +285,7 @@ public class IntegralClasica implements IntegralEstrategia {
         );
 
         String latex = String.format("\\frac{1}{\\sqrt{%d + %dx^{2}}}", a, b);
-        return new Template(integrando, primitiva, latex, pasos, (aLim, bLim) -> {
+        return new Template(integrando, primitiva, latex, pasos, List.of(MetodoResolucion.TRIGONOMETRICA, MetodoResolucion.SUSTITUCION), (aLim, bLim) -> {
             double valorInf = a + b * aLim * aLim;
             double valorSup = a + b * bLim * bLim;
             if (valorInf <= 0 || valorSup <= 0) {
@@ -310,7 +317,7 @@ public class IntegralClasica implements IntegralEstrategia {
 
         String latex = String.format("%s x^{%d}(%dx^{%d}%+d)^{%d}",
                 factor == 1.0 ? "" : String.format("%.0f", factor), p - 1, a, p, b, n);
-        return new Template(integrando, primitiva, latex.trim(), pasos, (aLim, bLim) -> {
+        return new Template(integrando, primitiva, latex.trim(), pasos, List.of(MetodoResolucion.SUSTITUCION, MetodoResolucion.FORMULA_DIRECTA), (aLim, bLim) -> {
             // sin restricciones adicionales
         });
     }
@@ -340,7 +347,7 @@ public class IntegralClasica implements IntegralEstrategia {
         String latex = String.format("\\frac{%s(2 %dx %+d)}{(%dx^{2} %+d x %+d)^{%d}}",
                 factorLatex, a, b, a, b, c, potencia);
 
-        return new Template(integrando, primitiva, latex, pasos, (aLim, bLim) -> {
+        return new Template(integrando, primitiva, latex, pasos, List.of(MetodoResolucion.SUSTITUCION, MetodoResolucion.FORMULA_DIRECTA), (aLim, bLim) -> {
             double denomInf = a * aLim * aLim + b * aLim + c;
             double denomSup = a * bLim * bLim + b * bLim + c;
             if (denomInf == 0 || denomSup == 0) {
@@ -458,13 +465,15 @@ public class IntegralClasica implements IntegralEstrategia {
         private final DoubleUnaryOperator F;
         private final String latex;
         private final List<String> pasos;
+        private final List<MetodoResolucion> metodos;
         private final DominioChecker dominioChecker;
 
-        private Template(DoubleUnaryOperator f, DoubleUnaryOperator F, String latex, List<String> pasos, DominioChecker dominioChecker) {
+        private Template(DoubleUnaryOperator f, DoubleUnaryOperator F, String latex, List<String> pasos, List<MetodoResolucion> metodos, DominioChecker dominioChecker) {
             this.f = f;
             this.F = F;
             this.latex = latex;
             this.pasos = pasos;
+            this.metodos = metodos;
             this.dominioChecker = dominioChecker;
         }
 
