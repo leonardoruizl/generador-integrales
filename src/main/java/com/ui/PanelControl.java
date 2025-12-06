@@ -79,6 +79,15 @@ public class PanelControl extends JPanel {
         boton.setBorder(BorderFactory.createEmptyBorder(10, 18, 10, 18));
         boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         boton.setOpaque(true);
+        boton.addChangeListener(e -> {
+            if (boton.isEnabled()) {
+                boton.setBackground(color);
+                boton.setForeground(Color.WHITE);
+            } else {
+                boton.setBackground(color.darker());
+                boton.setForeground(new Color(235, 238, 245));
+            }
+        });
         return boton;
     }
 
