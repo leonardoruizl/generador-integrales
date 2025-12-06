@@ -50,6 +50,7 @@ public class IntegralClasica implements IntegralEstrategia {
                 crearIntegralRadical(dificultad),
                 crearFraccionCuadratica(dificultad),
                 crearPolinomioExponencial(dificultad),
+                crearExponencialTrigonometrica(dificultad),
                 crearPolinomioTrigonometrico(dificultad),
                 crearInversaRaizCuadratica(dificultad),
                 crearPotenciaConDerivada(dificultad),
@@ -164,6 +165,53 @@ public class IntegralClasica implements IntegralEstrategia {
         String latex = String.format("(%s) e^{%dx%+d}", formatearPolinomio(coeficientes), a, desplazamiento);
         return new Template(integrando, primitiva, latex, pasos, (aLim, bLim) -> {
             // Sin restricciones de dominio
+        });
+    }
+
+    /**
+     * \int A e^{ax} \sin(bx) dx o \int A e^{ax} \cos(bx) dx
+     * Se resuelve con la fórmula cerrada derivada de aplicar integración por partes dos veces.
+     */
+    private Template crearExponencialTrigonometrica(Dificultad dificultad) {
+        int maxCoef = switch (dificultad) {
+            case FACIL -> 2;
+            case DIFICIL -> 5;
+            default -> 3;
+        };
+
+        int amplitud = RANDOM.nextInt(maxCoef) + 1;
+        int a = RANDOM.nextInt(maxCoef) + 1;
+        int b = RANDOM.nextInt(maxCoef) + 1;
+        boolean usaSeno = RANDOM.nextBoolean();
+
+        DoubleUnaryOperator integrando = x -> amplitud * Math.exp(a * x)
+                * (usaSeno ? Math.sin(b * x) : Math.cos(b * x));
+
+        DoubleUnaryOperator primitiva = x -> {
+            double denom = a * a + b * b;
+            double expo = Math.exp(a * x);
+
+            double combinacion = usaSeno
+                    ? (a * Math.sin(b * x) - b * Math.cos(b * x))
+                    : (a * Math.cos(b * x) + b * Math.sin(b * x));
+
+            return amplitud / denom * expo * combinacion;
+        };
+
+        List<String> pasos = List.of(
+                "Aplicar integración por partes sobre el término exponencial y el trigonométrico.",
+                "Repetir el proceso genera un sistema de dos ecuaciones con la integral original.",
+                String.format(
+                        "El resultado compacto es \\frac{A e^{ax}}{a^2 + b^2}(%s)",
+                        usaSeno ? "a\\sin(bx) - b\\cos(bx)" : "a\\cos(bx) + b\\sin(bx)"
+                )
+        );
+
+        String latex = String.format("%s e^{%dx} \\%s(%dx)",
+                amplitud == 1 ? "" : amplitud, a, usaSeno ? "sin" : "cos", b);
+
+        return new Template(integrando, primitiva, latex, pasos, (aLim, bLim) -> {
+            // Integral definida siempre continua; sin restricciones adicionales
         });
     }
 
