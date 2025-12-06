@@ -54,7 +54,7 @@ public class ConfigIntegralDialog extends JDialog {
     private void initUi() {
         setLayout(new BorderLayout(10, 10));
         setResizable(false);
-        setPreferredSize(new Dimension(520, 560));
+        setPreferredSize(new Dimension(520, 660));
 
         JLabel encabezado = new JLabel("Personaliza el ejercicio antes de generarlo");
         encabezado.setBorder(BorderFactory.createEmptyBorder(12, 12, 0, 12));
