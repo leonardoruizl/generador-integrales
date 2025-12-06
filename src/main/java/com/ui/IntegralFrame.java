@@ -24,9 +24,13 @@ public class IntegralFrame extends JFrame {
     private final PanelAppBar panelAppBar;
     private final PanelOpciones panelOpciones;
     private final PanelControl panelControl;
+    private JScrollPane scrollPrincipal;
     private final NumberFormat numberFormat;
     private final IntegralGenerator integralGenerator;
     private List<String> pasosActuales;
+
+    private static final Dimension GRAFICA_RETRAIDA = new Dimension(640, 320);
+    private static final Dimension GRAFICA_EXTENDIDA = new Dimension(680, 460);
 
     public IntegralFrame() {
         setTitle("Generador de Integrales");
@@ -46,6 +50,10 @@ public class IntegralFrame extends JFrame {
         panelGrafica = new PanelGrafica();
         panelOpciones = new PanelOpciones();
         panelControl = new PanelControl(e -> verificarRespuesta(), e -> mostrarPasos(), e -> alternarGrafica());
+        panelOpciones.setOnSelectionChange(() -> {
+            boolean haySeleccion = panelOpciones.haySeleccion();
+            panelControl.setVerificarHabilitado(haySeleccion);
+        });
         numberFormat = NumberFormat.getNumberInstance(Locale.US);
         numberFormat.setMaximumFractionDigits(5);
         numberFormat.setMinimumFractionDigits(0);
@@ -76,7 +84,7 @@ public class IntegralFrame extends JFrame {
         panelPrincipal.add(Box.createRigidArea(new Dimension(0, 12)));
         panelPrincipal.add(scrollOpciones);
 
-        JScrollPane scrollPrincipal = new JScrollPane(
+        scrollPrincipal = new JScrollPane(
                 panelPrincipal,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
@@ -131,6 +139,7 @@ public class IntegralFrame extends JFrame {
             panelGrafica.actualizarIntegral(integral, configActual.getLimiteInferior(), configActual.getLimiteSuperior());
             graficaVisible = false;
             panelGrafica.setVisible(false);
+            panelGrafica.setPreferredSize(GRAFICA_RETRAIDA);
             panelControl.actualizarEstadoGrafica(false);
             panelOpciones.mostrarOpciones(integral.getOpciones());
             panelControl.reset();
@@ -258,7 +267,11 @@ public class IntegralFrame extends JFrame {
         }
         graficaVisible = !graficaVisible;
         panelGrafica.setVisible(graficaVisible);
+        panelGrafica.setPreferredSize(graficaVisible ? GRAFICA_EXTENDIDA : GRAFICA_RETRAIDA);
         panelControl.actualizarEstadoGrafica(graficaVisible);
+        if (graficaVisible) {
+            SwingUtilities.invokeLater(() -> panelGrafica.scrollRectToVisible(panelGrafica.getBounds()));
+        }
         revalidate();
         repaint();
     }

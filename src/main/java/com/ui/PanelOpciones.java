@@ -13,6 +13,7 @@ public class PanelOpciones extends JPanel {
     private final List<JRadioButton> botones;
     private ButtonGroup grupoOpciones;
     private final NumberFormat numberFormat;
+    private Runnable onSelectionChange;
 
     public PanelOpciones() {
         setLayout(new BorderLayout(0, 10));
@@ -60,6 +61,25 @@ public class PanelOpciones extends JPanel {
                     BorderFactory.createEmptyBorder(8, 10, 8, 10)));
             boton.setFocusPainted(false);
             boton.setForeground(new Color(45, 52, 70));
+            boton.addActionListener(e -> {
+                actualizarEstilosSeleccion();
+                notificarSeleccion();
+            });
+            boton.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseEntered(java.awt.event.MouseEvent e) {
+                    if (!boton.isSelected()) {
+                        boton.setBackground(new Color(240, 246, 255));
+                    }
+                }
+
+                @Override
+                public void mouseExited(java.awt.event.MouseEvent e) {
+                    if (!boton.isSelected()) {
+                        boton.setBackground(new Color(250, 252, 255));
+                    }
+                }
+            });
             grupoOpciones.add(boton);
             botones.add(boton);
             contenedor.add(boton);
@@ -103,6 +123,40 @@ public class PanelOpciones extends JPanel {
             }
 
             boton.setEnabled(false);
+        }
+    }
+
+    public void setOnSelectionChange(Runnable onSelectionChange) {
+        this.onSelectionChange = onSelectionChange;
+    }
+
+    public boolean haySeleccion() {
+        return getOpcionSeleccionada() != -1;
+    }
+
+    private void notificarSeleccion() {
+        if (onSelectionChange != null) {
+            onSelectionChange.run();
+        }
+    }
+
+    private void actualizarEstilosSeleccion() {
+        for (JRadioButton boton : botones) {
+            if (boton.isSelected()) {
+                boton.setBackground(new Color(222, 235, 255));
+                boton.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(new Color(106, 141, 196)),
+                        BorderFactory.createEmptyBorder(8, 10, 8, 10)
+                ));
+                boton.setForeground(new Color(26, 48, 91));
+            } else {
+                boton.setBackground(new Color(250, 252, 255));
+                boton.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(new Color(235, 238, 244)),
+                        BorderFactory.createEmptyBorder(8, 10, 8, 10)
+                ));
+                boton.setForeground(new Color(45, 52, 70));
+            }
         }
     }
 
