@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.Random;
 
 import com.model.Dificultad;
+import com.model.MetodoResolucion;
 
 public class IntegralTrig implements IntegralEstrategia {
     private static final Random RAND = new Random();
@@ -73,5 +74,10 @@ public class IntegralTrig implements IntegralEstrategia {
                         : "\\int A\\sin(u)\\,du = -A\\,\\cos(u)",
                 "Reemplaza u por kx + \\varphi para obtener la primitiva final."
         );
+    }
+
+    @Override
+    public List<MetodoResolucion> getMetodosCompatibles() {
+        return List.of(MetodoResolucion.SUSTITUCION, MetodoResolucion.TRIGONOMETRICA, MetodoResolucion.FORMULA_DIRECTA);
     }
 }

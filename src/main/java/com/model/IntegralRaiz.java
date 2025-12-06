@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.model.Dificultad;
+import com.model.MetodoResolucion;
 
 public class IntegralRaiz implements IntegralEstrategia {
     private static final Random RAND = new Random();
@@ -85,5 +86,10 @@ public class IntegralRaiz implements IntegralEstrategia {
                         \\]
                         """
         );
+    }
+
+    @Override
+    public List<MetodoResolucion> getMetodosCompatibles() {
+        return List.of(MetodoResolucion.SUSTITUCION, MetodoResolucion.TRIGONOMETRICA);
     }
 }

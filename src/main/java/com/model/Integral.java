@@ -3,6 +3,8 @@ package com.model;
 import java.util.List;
 import java.util.Objects;
 
+import com.model.MetodoResolucion;
+
 public class Integral {
     private final IntegralEstrategia estrategia;
     private final double limiteInferior, limiteSuperior;
@@ -85,6 +87,10 @@ public class Integral {
 
     public List<String> getPasos() {
         return estrategia.getPasos();
+    }
+
+    public List<MetodoResolucion> getMetodosCompatibles() {
+        return estrategia.getMetodosCompatibles();
     }
 
     public double evaluarIntegrando(double x) {

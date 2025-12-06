@@ -3,6 +3,7 @@ package com.model;
 import java.util.List;
 
 import com.model.Dificultad;
+import com.model.MetodoResolucion;
 
 public interface IntegralEstrategia {
     /** Genera parámetros aleatorios internos */
@@ -19,4 +20,7 @@ public interface IntegralEstrategia {
 
     /** Pasos de resolución (si aplica) */
     List<String> getPasos();
+
+    /** Métodos válidos para resolver la integral */
+    List<MetodoResolucion> getMetodosCompatibles();
 }

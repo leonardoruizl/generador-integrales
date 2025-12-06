@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.model.Dificultad;
+import com.model.MetodoResolucion;
 
 public class IntegralFraccion implements IntegralEstrategia {
     private int a, b, c, d;
@@ -85,7 +86,7 @@ public class IntegralFraccion implements IntegralEstrategia {
                         """, a, b, c, d, a, c, (b * c - a * d), (c * c)),
                 """
                         Entonces:
-                        
+
                         \\[
                         \\int \\frac{ax + b}{cx + d} dx
                         = \\frac{a}{c}x
@@ -93,5 +94,10 @@ public class IntegralFraccion implements IntegralEstrategia {
                         \\]
                         """
         );
+    }
+
+    @Override
+    public List<MetodoResolucion> getMetodosCompatibles() {
+        return List.of(MetodoResolucion.FRACCIONES_PARCIALES, MetodoResolucion.SUSTITUCION);
     }
 }
