@@ -74,8 +74,18 @@ public class IntegralFrame extends JFrame {
         panelPrincipal.add(Box.createRigidArea(new Dimension(0, 12)));
         panelPrincipal.add(scrollOpciones);
 
+        JScrollPane scrollPrincipal = new JScrollPane(
+                panelPrincipal,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
+        );
+        scrollPrincipal.setBorder(BorderFactory.createEmptyBorder());
+        scrollPrincipal.getViewport().setOpaque(false);
+        scrollPrincipal.setOpaque(false);
+        scrollPrincipal.getVerticalScrollBar().setUnitIncrement(16);
+
         add(panelAppBar, BorderLayout.NORTH);
-        add(panelPrincipal, BorderLayout.CENTER);
+        add(scrollPrincipal, BorderLayout.CENTER);
         add(panelControl, BorderLayout.SOUTH);
 
         crearMenu();
