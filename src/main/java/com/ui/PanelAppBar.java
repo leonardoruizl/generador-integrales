@@ -1,5 +1,6 @@
 package com.ui;
 
+import com.util.IconoIntegral;
 import com.util.IconoMenu;
 import com.util.IconoPlus;
 
@@ -20,6 +21,8 @@ public class PanelAppBar extends JPanel {
 
         // Título
         JLabel titulo = new JLabel("Generador de Integrales", SwingConstants.LEFT);
+        titulo.setIcon(new IconoIntegral(20, 24, Color.WHITE, 2.2f));
+        titulo.setIconTextGap(8);
         titulo.setForeground(Color.WHITE);
         titulo.setFont(new Font("Segoe UI", Font.BOLD, 18));
         titulo.setBorder(BorderFactory.createEmptyBorder(0, 4, 0, 0));

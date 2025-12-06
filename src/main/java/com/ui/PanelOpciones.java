@@ -1,5 +1,7 @@
 package com.ui;
 
+import com.util.IconoLista;
+
 import javax.swing.*;
 import java.awt.*;
 import java.math.BigDecimal;
@@ -37,6 +39,8 @@ public class PanelOpciones extends JPanel {
         contenedor.setOpaque(false);
 
         JLabel titulo = new JLabel("Opciones de respuesta", SwingConstants.LEFT);
+        titulo.setIcon(new IconoLista(16, 16, new Color(69, 88, 132), 2.1f));
+        titulo.setIconTextGap(8);
         titulo.setFont(new Font("Segoe UI", Font.BOLD, 14));
         titulo.setBorder(BorderFactory.createEmptyBorder(4, 6, 2, 6));
         titulo.setForeground(new Color(52, 61, 83));
