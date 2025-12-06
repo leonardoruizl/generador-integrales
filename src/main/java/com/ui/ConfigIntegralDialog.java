@@ -5,30 +5,32 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 
 import com.model.Dificultad;
+import com.model.IntegralConfig;
 
 public class ConfigIntegralDialog extends JDialog {
     private JRadioButton rbRaiz, rbFraccion, rbTrig, rbClasica, rbAleatoria;
     private JRadioButton rbFacil, rbMedio, rbDificil;
     private JCheckBox cbMostrarPasos, cbAleatorio;
-    private JSpinner spLimiteInferior, spLimiteSuperior;
-    private JLabel etiquetaRango;
+    private JSpinner spLimiteInferior, spLimiteSuperior, spCantidadOpciones;
+    private JLabel etiquetaRango, descripcionDificultad;
     private boolean confirmado = false;
 
-    public ConfigIntegralDialog(Frame owner, double limInf, double limSup, boolean mostrar, boolean aleatorio, String tipo, Dificultad dificultad) {
+    public ConfigIntegralDialog(Frame owner, IntegralConfig config) {
         super(owner, "Configuración de Integral", true);
         initUi();
 
-        spLimiteInferior.setValue(limInf);
-        spLimiteSuperior.setValue(limSup);
-        cbMostrarPasos.setSelected(mostrar);
+        spLimiteInferior.setValue(config.getLimiteInferior());
+        spLimiteSuperior.setValue(config.getLimiteSuperior());
+        cbMostrarPasos.setSelected(config.isMostrarPasos());
+        spCantidadOpciones.setValue(config.getCantidadOpciones());
 
-        switch (dificultad) {
+        switch (config.getDificultad()) {
             case FACIL -> rbFacil.setSelected(true);
             case DIFICIL -> rbDificil.setSelected(true);
             default -> rbMedio.setSelected(true);
         }
 
-        switch (tipo) {
+        switch (config.getTipo()) {
             case "raiz" -> rbRaiz.setSelected(true);
             case "fraccion" -> rbFraccion.setSelected(true);
             case "trig" -> rbTrig.setSelected(true);
@@ -36,11 +38,12 @@ public class ConfigIntegralDialog extends JDialog {
             default -> rbAleatoria.setSelected(true);
         }
 
-        cbAleatorio.setSelected(aleatorio);
-        spLimiteInferior.setEnabled(!aleatorio);
-        spLimiteSuperior.setEnabled(!aleatorio);
+        cbAleatorio.setSelected(config.isLimitesAleatorios());
+        spLimiteInferior.setEnabled(!config.isLimitesAleatorios());
+        spLimiteSuperior.setEnabled(!config.isLimitesAleatorios());
 
         actualizarResumenLimites();
+        actualizarDescripcionDificultad();
 
         pack();
         setLocationRelativeTo(owner);
@@ -99,10 +102,14 @@ public class ConfigIntegralDialog extends JDialog {
         pasosPanel.add(cbMostrarPasos);
 
         // Panel de dificultad
-        JPanel dificultadPanel = new JPanel(new GridLayout(0, 1, 4, 4));
+        JPanel dificultadPanel = new JPanel();
+        dificultadPanel.setLayout(new BorderLayout(0, 6));
         dificultadPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder("Dificultad"),
                 BorderFactory.createEmptyBorder(4, 8, 8, 8)));
+
+        JPanel dificultadRadios = new JPanel(new GridLayout(0, 1, 4, 4));
+        dificultadRadios.setOpaque(false);
 
         rbFacil = new JRadioButton("Fácil");
         rbFacil.setToolTipText("Intervalos cortos y operaciones sencillas");
@@ -118,9 +125,21 @@ public class ConfigIntegralDialog extends JDialog {
 
         rbMedio.setSelected(true);
 
-        dificultadPanel.add(rbFacil);
-        dificultadPanel.add(rbMedio);
-        dificultadPanel.add(rbDificil);
+        dificultadRadios.add(rbFacil);
+        dificultadRadios.add(rbMedio);
+        dificultadRadios.add(rbDificil);
+
+        descripcionDificultad = new JLabel();
+        descripcionDificultad.setFont(descripcionDificultad.getFont().deriveFont(Font.ITALIC, 11f));
+        descripcionDificultad.setForeground(new Color(55, 70, 90));
+        descripcionDificultad.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+
+        JPanel descripcionPanel = new JPanel(new BorderLayout());
+        descripcionPanel.setOpaque(false);
+        descripcionPanel.add(descripcionDificultad, BorderLayout.CENTER);
+
+        dificultadPanel.add(dificultadRadios, BorderLayout.NORTH);
+        dificultadPanel.add(descripcionPanel, BorderLayout.CENTER);
 
         // Panel de límites
         JPanel limitesPanel = new JPanel(new GridBagLayout());
@@ -175,6 +194,10 @@ public class ConfigIntegralDialog extends JDialog {
             actualizarResumenLimites();
         });
 
+        rbFacil.addActionListener(e -> actualizarDescripcionDificultad());
+        rbMedio.addActionListener(e -> actualizarDescripcionDificultad());
+        rbDificil.addActionListener(e -> actualizarDescripcionDificultad());
+
         spLimiteInferior.setEnabled(!cbAleatorio.isSelected());
         spLimiteSuperior.setEnabled(!cbAleatorio.isSelected());
 
@@ -186,6 +209,25 @@ public class ConfigIntegralDialog extends JDialog {
         ChangeListener rangeListener = e -> actualizarResumenLimites();
         spLimiteInferior.addChangeListener(rangeListener);
         spLimiteSuperior.addChangeListener(rangeListener);
+
+        // Panel de opciones de respuesta
+        JPanel opcionesPanel = new JPanel(new GridBagLayout());
+        opcionesPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createTitledBorder("Opciones de respuesta"),
+                BorderFactory.createEmptyBorder(4, 8, 8, 8)));
+
+        GridBagConstraints opcionesConstraints = new GridBagConstraints();
+        opcionesConstraints.insets = new Insets(5, 5, 5, 5);
+        opcionesConstraints.anchor = GridBagConstraints.WEST;
+        opcionesConstraints.gridx = 0;
+        opcionesConstraints.gridy = 0;
+        opcionesPanel.add(new JLabel("Cantidad de opciones:"), opcionesConstraints);
+
+        SpinnerNumberModel opcionesModel = new SpinnerNumberModel(5, 3, 8, 1);
+        spCantidadOpciones = new JSpinner(opcionesModel);
+        spCantidadOpciones.setPreferredSize(new Dimension(60, spCantidadOpciones.getPreferredSize().height));
+        opcionesConstraints.gridx = 1;
+        opcionesPanel.add(spCantidadOpciones, opcionesConstraints);
 
         // Panel de botones
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -213,6 +255,7 @@ public class ConfigIntegralDialog extends JDialog {
         centroPanel.add(dificultadPanel);
         centroPanel.add(pasosPanel);
         centroPanel.add(limitesPanel);
+        centroPanel.add(opcionesPanel);
 
         JScrollPane scrollCentro = new JScrollPane(centroPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollCentro.setBorder(BorderFactory.createEmptyBorder());
@@ -256,6 +299,10 @@ public class ConfigIntegralDialog extends JDialog {
         if (rbFacil.isSelected()) return Dificultad.FACIL;
         if (rbDificil.isSelected()) return Dificultad.DIFICIL;
         return Dificultad.MEDIA;
+    }
+
+    public int getCantidadOpciones() {
+        return ((Number) spCantidadOpciones.getValue()).intValue();
     }
 
     private boolean validarLimites() {
@@ -316,6 +363,18 @@ public class ConfigIntegralDialog extends JDialog {
             etiquetaRango.setForeground(new Color(60, 90, 60));
             etiquetaRango.setText(String.format("Rango actual: %.3f unidades (%.3f a %.3f)", rango, limInf, limSup));
         }
+    }
+
+    private void actualizarDescripcionDificultad() {
+        String descripcion;
+        if (rbFacil.isSelected()) {
+            descripcion = "Integrales con expresiones simples y variaciones suaves.";
+        } else if (rbDificil.isSelected()) {
+            descripcion = "Intervalos más amplios y constantes que generan resultados más desafiantes.";
+        } else {
+            descripcion = "Equilibrio entre complejidad y diversidad en los ejercicios.";
+        }
+        descripcionDificultad.setText(descripcion);
     }
 
     public double getLimiteInferior() {
