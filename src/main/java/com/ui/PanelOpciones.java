@@ -5,10 +5,12 @@ import java.awt.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class PanelOpciones extends JPanel {
-    private final JRadioButton[] botones;
+    private final List<JRadioButton> botones;
     private ButtonGroup grupoOpciones;
     private final NumberFormat numberFormat;
 
@@ -16,7 +18,7 @@ public class PanelOpciones extends JPanel {
         setLayout(new BorderLayout(0, 10));
         setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
         setOpaque(false);
-        botones = new JRadioButton[5];
+        botones = new ArrayList<>();
         grupoOpciones = new ButtonGroup();
         numberFormat = NumberFormat.getNumberInstance(Locale.US);
         numberFormat.setMaximumFractionDigits(5);
@@ -28,6 +30,7 @@ public class PanelOpciones extends JPanel {
     public void mostrarOpciones(double[] opciones) {
         removeAll(); // Limpiar opciones anteriores
         grupoOpciones = new ButtonGroup(); // Reiniciar el grupo de botones
+        botones.clear();
 
         JPanel contenedor = new JPanel(new GridLayout(0, 1, 6, 6));
         contenedor.setOpaque(false);
@@ -45,21 +48,21 @@ public class PanelOpciones extends JPanel {
                 BorderFactory.createEmptyBorder(10, 12, 12, 12)
         ));
 
-        char[] letras = {'A', 'B', 'C', 'D', 'E'};
-
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < opciones.length; i++) {
             String textoOpcion = numberFormat.format(redondearCincoDecimales(opciones[i]));
-            botones[i] = new JRadioButton(String.format("%s) %s", letras[i], textoOpcion));
-            botones[i].setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            botones[i].setOpaque(true);
-            botones[i].setBackground(new Color(250, 252, 255));
-            botones[i].setBorder(BorderFactory.createCompoundBorder(
+            String etiqueta = i < 26 ? String.valueOf((char) ('A' + i)) : String.format("%02d", i + 1);
+            JRadioButton boton = new JRadioButton(String.format("%s) %s", etiqueta, textoOpcion));
+            boton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            boton.setOpaque(true);
+            boton.setBackground(new Color(250, 252, 255));
+            boton.setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(new Color(235, 238, 244)),
                     BorderFactory.createEmptyBorder(8, 10, 8, 10)));
-            botones[i].setFocusPainted(false);
-            botones[i].setForeground(new Color(45, 52, 70));
-            grupoOpciones.add(botones[i]);
-            contenedor.add(botones[i]);
+            boton.setFocusPainted(false);
+            boton.setForeground(new Color(45, 52, 70));
+            grupoOpciones.add(boton);
+            botones.add(boton);
+            contenedor.add(boton);
         }
 
         tarjeta.add(titulo, BorderLayout.NORTH);
@@ -73,8 +76,8 @@ public class PanelOpciones extends JPanel {
 
     // Devuelve el índice de la opción seleccionada, o -1 si no hay selección
     public int getOpcionSeleccionada() {
-        for (int i = 0; i < botones.length; i++) {
-            if (botones[i].isSelected()) {
+        for (int i = 0; i < botones.size(); i++) {
+            if (botones.get(i).isSelected()) {
                 return i;
             }
         }
@@ -89,8 +92,8 @@ public class PanelOpciones extends JPanel {
     }
 
     public void resaltarRespuestas(int opcionCorrecta, int seleccion) {
-        for (int i = 0; i < botones.length; i++) {
-            JRadioButton boton = botones[i];
+        for (int i = 0; i < botones.size(); i++) {
+            JRadioButton boton = botones.get(i);
             String texto = boton.getText();
 
             if (i == opcionCorrecta) {

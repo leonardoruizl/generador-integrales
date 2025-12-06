@@ -1,7 +1,9 @@
 package com.ui;
 
-import com.model.Dificultad;
 import com.model.Integral;
+import com.model.IntegralConfig;
+import com.model.IntegralGenerator;
+import com.util.PreferenciasUsuario;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,12 +13,7 @@ import java.util.Locale;
 import java.util.Random;
 
 public class IntegralFrame extends JFrame {
-    private String tipo = "aleatoria";
-    private double limiteInferior = 0;
-    private double limiteSuperior = 1;
-    private boolean mostrarPasos = false;
-    private boolean limitesAleatorios = true;
-    private Dificultad dificultad = Dificultad.MEDIA;
+    private IntegralConfig config;
     private boolean graficaVisible = false;
 
     private Integral integral; // El modelo de la integral
@@ -27,6 +24,7 @@ public class IntegralFrame extends JFrame {
     private final PanelOpciones panelOpciones;
     private final PanelControl panelControl;
     private final NumberFormat numberFormat;
+    private final IntegralGenerator integralGenerator;
     private List<String> pasosActuales;
 
     public IntegralFrame() {
@@ -50,6 +48,9 @@ public class IntegralFrame extends JFrame {
         numberFormat = NumberFormat.getNumberInstance(Locale.US);
         numberFormat.setMaximumFractionDigits(5);
         numberFormat.setMinimumFractionDigits(0);
+
+        config = PreferenciasUsuario.cargarConfig();
+        integralGenerator = new IntegralGenerator();
 
         // Panel superior
         JPanel panelPrincipal = new JPanel();
@@ -95,7 +96,9 @@ public class IntegralFrame extends JFrame {
     }
 
     private void generarNuevaIntegral() {
-        if (limitesAleatorios) {
+        IntegralConfig configActual = config.copiar();
+
+        if (configActual.isLimitesAleatorios()) {
             Random r = new Random();
             int a = r.nextInt(11) - 5;   // [-5, 5]
             int b = r.nextInt(11) - 5;
@@ -110,15 +113,21 @@ public class IntegralFrame extends JFrame {
                 b = a + 1;
             }
 
-            limiteInferior = a;
-            limiteSuperior = b;
+            configActual.setLimiteInferior(a);
+            configActual.setLimiteSuperior(b);
         }
 
         try {
-            integral = new Integral(tipo, limiteInferior, limiteSuperior, dificultad);
+            integral = integralGenerator.crearIntegral(
+                    configActual.getTipo(),
+                    configActual.getLimiteInferior(),
+                    configActual.getLimiteSuperior(),
+                    configActual.getDificultad(),
+                    configActual.getCantidadOpciones()
+            );
 
             panelIntegral.mostrarIntegral(integral);
-            panelGrafica.actualizarIntegral(integral, limiteInferior, limiteSuperior);
+            panelGrafica.actualizarIntegral(integral, configActual.getLimiteInferior(), configActual.getLimiteSuperior());
             graficaVisible = false;
             panelGrafica.setVisible(false);
             panelControl.actualizarEstadoGrafica(false);
@@ -151,22 +160,22 @@ public class IntegralFrame extends JFrame {
     }
 
     private void mostrarConfiguracionIntegral() {
-        ConfigIntegralDialog configDialog = new ConfigIntegralDialog(this, limiteInferior, limiteSuperior, mostrarPasos, limitesAleatorios, tipo, dificultad);
+        ConfigIntegralDialog configDialog = new ConfigIntegralDialog(this, config);
         configDialog.setVisible(true);
 
         if (!configDialog.getConfirmado()) {
             return;
         }
 
-        tipo = configDialog.getTipoIntegral();
-        mostrarPasos = configDialog.getMostrarPasos();
-        limitesAleatorios = configDialog.getLimitesAleatorios();
-        dificultad = configDialog.getDificultadSeleccionada();
+        config.setTipo(configDialog.getTipoIntegral());
+        config.setMostrarPasos(configDialog.getMostrarPasos());
+        config.setLimitesAleatorios(configDialog.getLimitesAleatorios());
+        config.setDificultad(configDialog.getDificultadSeleccionada());
+        config.setCantidadOpciones(configDialog.getCantidadOpciones());
+        config.setLimiteInferior(configDialog.getLimiteInferior());
+        config.setLimiteSuperior(configDialog.getLimiteSuperior());
 
-        if (!limitesAleatorios) {
-            limiteInferior = configDialog.getLimiteInferior();
-            limiteSuperior = configDialog.getLimiteSuperior();
-        }
+        PreferenciasUsuario.guardarConfig(config);
 
         generarNuevaIntegral();
     }
@@ -192,11 +201,11 @@ public class IntegralFrame extends JFrame {
         }
 
         pasosActuales = integral.getPasos();
-        panelControl.habilitarVerPasos(mostrarPasos);
+        panelControl.habilitarVerPasos(config.isMostrarPasos());
     }
 
     private void mostrarPasos() {
-        if (!mostrarPasos) {
+        if (!config.isMostrarPasos()) {
             JOptionPane.showMessageDialog(this,
                     "Activa 'Mostrar pasos de solución' en la configuración para verlos.",
                     "Pasos no disponibles",
