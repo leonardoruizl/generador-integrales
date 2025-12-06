@@ -18,7 +18,9 @@ public class PanelControl extends JPanel {
     private final JButton verGraficaBoton;
     private final JComboBox<MetodoResolucion> metodoCombo;
     private final JLabel metodosSugeridos;
+    private final JPanel selectorPanel;
     private Set<MetodoResolucion> metodosCompatibles;
+    private boolean selectorVisible;
 
     public PanelControl(ActionListener verificarListener, ActionListener verPasosListener, ActionListener verGraficaListener) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -54,6 +56,16 @@ public class PanelControl extends JPanel {
         metodosSugeridos.setFont(new Font("Segoe UI", Font.ITALIC, 11));
         metodosSugeridos.setForeground(new Color(90, 105, 130));
 
+        selectorPanel = new JPanel();
+        selectorPanel.setLayout(new BoxLayout(selectorPanel, BoxLayout.Y_AXIS));
+        selectorPanel.setOpaque(false);
+        selectorPanel.add(metodoLabel);
+        selectorPanel.add(Box.createRigidArea(new Dimension(0, 4)));
+        selectorPanel.add(metodoCombo);
+        selectorPanel.add(Box.createRigidArea(new Dimension(0, 4)));
+        selectorPanel.add(metodosSugeridos);
+        selectorPanel.setVisible(false);
+
         verificarBoton = crearBotonPrimario("Verificar respuesta", new Color(70, 95, 200));
         verificarBoton.addActionListener(verificarListener);
 
@@ -76,11 +88,7 @@ public class PanelControl extends JPanel {
         resultadoLabel.setOpaque(true);
         resultadoLabel.setBackground(new Color(255, 255, 255, 235));
 
-        add(metodoLabel);
-        add(Box.createRigidArea(new Dimension(0, 4)));
-        add(metodoCombo);
-        add(Box.createRigidArea(new Dimension(0, 4)));
-        add(metodosSugeridos);
+        add(selectorPanel);
         add(Box.createRigidArea(new Dimension(0, 12)));
 
         add(verificarBoton);
@@ -107,6 +115,7 @@ public class PanelControl extends JPanel {
         metodoCombo.setSelectedItem(null);
         metodosCompatibles = EnumSet.noneOf(MetodoResolucion.class);
         metodosSugeridos.setText("Selecciona un método para validar si aplica");
+        mostrarSelectorMetodos(false);
     }
 
     public void habilitarVerPasos(boolean habilitado) {
@@ -115,6 +124,20 @@ public class PanelControl extends JPanel {
 
     public void actualizarEstadoGrafica(boolean visible) {
         verGraficaBoton.setText(visible ? "Ocultar gráfica" : "Ver gráfica");
+    }
+
+    public void mostrarSelectorMetodos(boolean visible) {
+        selectorVisible = visible;
+        selectorPanel.setVisible(visible);
+        revalidate();
+        repaint();
+        if (visible) {
+            metodoCombo.requestFocusInWindow();
+        }
+    }
+
+    public boolean estaSelectorVisible() {
+        return selectorVisible;
     }
 
     public void configurarMetodos(List<MetodoResolucion> compatibles) {

@@ -31,7 +31,7 @@ public class IntegralFrame extends JFrame {
     public IntegralFrame() {
         setTitle("Generador de Integrales");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(720, 620);
+        setSize(900, 760);
         setLocationRelativeTo(null);
         getContentPane().setBackground(new Color(242, 245, 250));
         setLayout(new BorderLayout(10, 10));
@@ -219,6 +219,15 @@ public class IntegralFrame extends JFrame {
             JOptionPane.showMessageDialog(this,
                     "No hay pasos disponibles para esta integral.",
                     "Pasos no disponibles",
+                    JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        if (!panelControl.estaSelectorVisible()) {
+            panelControl.mostrarSelectorMetodos(true);
+            JOptionPane.showMessageDialog(this,
+                    "Elige un método de resolución para validar si aplica a esta integral.",
+                    "Selecciona un método",
                     JOptionPane.INFORMATION_MESSAGE);
             return;
         }
