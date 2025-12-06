@@ -1,6 +1,7 @@
 package com.model;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 import com.model.Dificultad;
@@ -8,6 +9,9 @@ import com.model.Dificultad;
 public class IntegralTrig implements IntegralEstrategia {
     private static final Random RAND = new Random();
     private int k;
+    private int amplitud;
+    private double fase;
+    private boolean usaCoseno;
 
     @Override
     public void generarParametros(Dificultad dificultad) {
@@ -18,6 +22,14 @@ public class IntegralTrig implements IntegralEstrategia {
         };
 
         k = RAND.nextInt(rangoMax) + 1;
+        amplitud = RAND.nextInt(rangoMax) + 1;
+
+        // Desplazamiento de fase en cuartos de pi para evitar equivalencias triviales
+        int pasosFase = dificultad == Dificultad.FACIL ? 4 : 8;
+        fase = RAND.nextInt(pasosFase) * (Math.PI / 4.0);
+
+        // Alternar seno/coseno para ampliar el catálogo de integrales trigonométricas
+        usaCoseno = RAND.nextBoolean();
     }
 
     @Override
@@ -26,42 +38,40 @@ public class IntegralTrig implements IntegralEstrategia {
     }
 
     /**
-     * F(x) = -cos(kx) / k
+     * F(x) =
+     *  - A/k * cos(kx + fase)   si integrando es A * sin(kx + fase)
+     *    A/k * sin(kx + fase)   si integrando es A * cos(kx + fase)
      */
     private double F(double x) {
-        return -Math.cos(k * x) / k;
+        double argumento = k * x + fase;
+        return usaCoseno
+                ? (amplitud / (double) k) * Math.sin(argumento)
+                : -(amplitud / (double) k) * Math.cos(argumento);
     }
 
     @Override
     public String getIntegrandoLatex() {
-        return String.format("\\sin(%dx)", k);
+        String funcion = usaCoseno ? "cos" : "sin";
+        String faseLatex = fase == 0 ? "" : String.format(Locale.US, "%+.2f", fase);
+        return String.format(Locale.US, "%s\\%s(%dx%s)",
+                amplitud == 1 ? "" : amplitud, funcion, k, faseLatex);
     }
 
     @Override
     public double evaluarIntegrando(double x) {
-        return Math.sin(k * x);
+        double argumento = k * x + fase;
+        return amplitud * (usaCoseno ? Math.cos(argumento) : Math.sin(argumento));
     }
 
     @Override
     public List<String> getPasos() {
         return List.of(
-                "Cambio de variable d/du para reducir el argumento trigonométrico.",
-                String.format("Sea \\(u = %dx\\), entonces \\(du = %d\\,dx\\).", k, k),
-                """
-                        \\[
-                        \\int \\sin(kx) dx = \\,\\frac{1}{k} \\int \\sin(u) \\; du
-                        \\]
-                        """,
-                """
-                        \\[
-                        = -\\frac{1}{k} \\cos(u)
-                        \\]
-                        """,
-                """
-                        \\[
-                        = -\\frac{1}{k} \\cos(kx)
-                        \\]
-                        """
+                "Cambio de variable d/du para simplificar el argumento trigonométrico.",
+                String.format(Locale.US, "Sea \\(u = %dx%+2.2f\\), entonces \\(du = %d\\,dx\\).", k, fase, k),
+                usaCoseno
+                        ? "\\int A\\cos(u)\\,du = A\\,\\sin(u)"
+                        : "\\int A\\sin(u)\\,du = -A\\,\\cos(u)",
+                "Reemplaza u por kx + \\varphi para obtener la primitiva final."
         );
     }
 }
