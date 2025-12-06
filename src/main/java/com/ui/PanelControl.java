@@ -3,6 +3,7 @@ package com.ui;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import javax.swing.plaf.basic.BasicButtonUI;
 
 public class PanelControl extends JPanel {
     private final JButton verificarBoton;
@@ -71,6 +72,7 @@ public class PanelControl extends JPanel {
 
     private JButton crearBotonPrimario(String texto, Color color) {
         JButton boton = new JButton(texto);
+        boton.setUI(new BasicButtonUI());
         boton.setFont(new Font("Segoe UI", Font.BOLD, 14));
         boton.setAlignmentX(Component.CENTER_ALIGNMENT);
         boton.setBackground(color);
